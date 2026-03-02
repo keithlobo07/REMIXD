@@ -1,0 +1,42 @@
+:root {
+    --bg: #00132D;
+    --theme-text: #EFE9FF;
+    --button-default: #002657;
+}
+
+html,body {
+    background-color: var(--bg);
+    margin: 0;
+    font-family: DM Sans, sans-serif;
+    padding: 2rem 0;
+}
+
+h1 {
+    margin: 2rem auto 0;
+	display: block;
+    gap: 6px;
+	align-items: center;
+	text-align: center;
+	color: var(--theme-text);
+	font-size: clamp(56px, 8.2vw, 96px);
+	font-weight: 800;
+	letter-spacing: 5px;
+    max-width: 570px;
+}
+
+.landerBtn {
+    width: 300px;
+	height: 84px;
+	border: 0;
+	border-radius: 30px;
+	background: var(--button-default);
+	color: #fff;
+	font-family: "DM Sans", sans-serif;
+	font-size: 25px;
+	font-weight: 600;
+	line-height: normal;
+	justify-content: center;
+	align-items: center;
+	gap: 14px;
+	cursor: pointer;
+}
