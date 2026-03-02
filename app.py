@@ -43,5 +43,16 @@ def albums_reviews(albumid):
         ]
     })
 
+@app.route("/api/user/<userid>")
+def user_lookup(userid):
+    return jsonify({
+        "id":"1",
+        "name":"Rose",
+        "bio":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec est felis, facilisis fringilla rhoncus eu, posuere et neque. Nam at massa sodales tortor placerat convallis sed euismod erat. Vestibulum euismod ipsum ut justo finibus scelerisque. Fusce dapibus pulvinar turpis ac tristique. Nulla vehicula urna eu dui congue, id sollicitudin augue auctor. Curabitur interdum ultricies urna, nec mattis massa lobortis vitae. Etiam quis facilisis purus. Suspendisse nec sagittis libero.",
+        "reviews":[
+            {"rating":"10", "datetime":"1772451614", "flags":"011", "content":"I really like this album a whole lot."}
+        ]
+    })
+
 if __name__ == "__main__":
     app.run()
