@@ -109,5 +109,16 @@ def admin_review_search():
         "reviews":[{"accountID":x[0], "albumID":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "reports":x[6], "likes":x[7]} for x in results]
     })
 
+@app.route("/api/admin/users")
+def admin_user_search():
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT ReviewAccountID, (SELECT Name FROM Account WHERE ID = Tags.ReviewAccountID) AS Name, COUNT(*) AS `Total Reports` FROM Tags WHERE info & 64 GROUP BY ReviewAccountID ORDER BY `Total Reports` LIMIT 5;")
+    results = cursor.fetchall()
+    cursor.close()
+
+    return jsonify({
+        "users":[{"accountID":x[0], "name":x[1], "numReports":x[2]} for x in results]
+    })
+
 if __name__ == "__main__":
     app.run()
