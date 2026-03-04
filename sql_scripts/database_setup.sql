@@ -11,7 +11,7 @@ CREATE TABLE `Account` (
     Password varchar(255) NOT NULL,
     Bio varchar(127),
     PFP varchar(255),
-    modFlags binary(1) NOT NULL default 0,
+    modFlags bit(8) NOT NULL default 0,
     modComment varchar(127),
     PRIMARY KEY (ID)
 );
@@ -33,7 +33,7 @@ CREATE TABLE `Tags` (
 	AccountID int NOT NULL,
     ReviewAccountID int NOT NULL,
     ReviewAlbumID int NOT NULL,
-    info binary(1) NOT NULL,
+    info bit(8) NOT NULL,
     FOREIGN KEY (AccountID) REFERENCES Account(ID),
     FOREIGN KEY (ReviewAccountID, ReviewAlbumID) REFERENCES Review(AccountID, AlbumID),
     PRIMARY KEY (AccountID,ReviewAccountID,ReviewAlbumID)

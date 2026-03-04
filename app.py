@@ -42,14 +42,14 @@ def album_lookup(albumid):
 @app.route("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
     limit = request.args.get('limit')
-    limit = limit if limit != None else 5
+    limit = int(limit) if limit != None else 5
 
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=%s ORDER BY Review.timestamp DESC LIMIT %s", (albumid, limit))
+    cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=%s ORDER BY Review.timestamp DESC LIMIT %s;", (albumid, limit))
     results = cursor.fetchall()
 
     return jsonify({
-        "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "userliked":False, "userreport":False} for x in results]
+        "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6], "userliked":False, "userreport":False} for x in results]
     })
 
 @app.route("/api/user/<userid>")
