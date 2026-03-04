@@ -1,7 +1,14 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, request
+from flaskext.mysql import MySQL
+
 
 app = Flask(__name__)
+sql = MySQL(app)
+
+app.config["MYSQL_DATABASE_HOST"] = "remixd.csumcw23kuop.us-east-1.rds.amazonaws.com"
+app.config["MYSQL_DATABASE_USER"] = "admin"
+app.config["MYSQL_DATABASE_PASSWORD"] = "O75BmgKdl9ZPnacoEwwQ"
+app.config["MYSQL_DATABASE_DB"] = "remixd"
 
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
@@ -45,13 +52,17 @@ def albums_reviews(albumid):
 
 @app.route("/api/user/<userid>")
 def user_lookup(userid):
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT * FROM Account WHERE ID=%s LIMIT 1;" %str(userid))
+    user = cursor.fetchone()
+    cursor.execute("SELECT * FROM Review WHERE AccountID=%d ORDER BY timestamp DESC LIMIT 5;" %user[0])
+    reviews = cursor.fetchall()
+    
     return jsonify({
-        "id":"1",
-        "name":"Rose",
-        "bio":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec est felis, facilisis fringilla rhoncus eu, posuere et neque. Nam at massa sodales tortor placerat convallis sed euismod erat. Vestibulum euismod ipsum ut justo finibus scelerisque. Fusce dapibus pulvinar turpis ac tristique. Nulla vehicula urna eu dui congue, id sollicitudin augue auctor. Curabitur interdum ultricies urna, nec mattis massa lobortis vitae. Etiam quis facilisis purus. Suspendisse nec sagittis libero.",
-        "reviews":[
-            {"rating":"10", "datetime":"1772451614", "flags":"011", "content":"I really like this album a whole lot."}
-        ]
+        "id":user[0],
+        "name":user[1],
+        "bio":user[5],
+        "reviews":[{"albumid":x[1], "timestamp":x[2], "score":x[3], "content":x[4], "flags":"000"} for x in reviews]
     })
 
 @app.route("/api/albums")
