@@ -41,13 +41,15 @@ def album_lookup(albumid):
 
 @app.route("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
+    limit = request.args.get('limit')
+    limit = limit if limit != None else 5
+
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=%s ORDER BY Review.timestamp DESC LIMIT %s", (albumid, limit))
+    results = cursor.fetchall()
+
     return jsonify({
-        "reviews":[
-            {"id":"1", "name":"Rose", "rating":"10", "datetime":"1772451614", "flags":"011", "content":"I really like this album a whole lot."},
-            {"id":"2", "name":"Imran", "rating":"1", "datetime":"1772451679", "flags":"100", "content":"I fucking hate this album and i hate all other good music as well."},
-            {"id":"3", "name":"Bethany", "rating":"7", "datetime":"1772451785", "flags":"001", "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel tellus dictum, pellentesque mauris ut, posuere dui. Quisque tortor est, consectetur et magna eu, blandit porttitor nunc."},
-            {"id":"4", "name":"Keith", "rating":"9", "datetime":"1772451958", "flags":"110", "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dictum tortor at mauris aliquet imperdiet. Cras vitae tellus consectetur, imperdiet erat vel, pharetra lectus."}
-        ]
+        "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "userliked":False, "userreport":False} for x in results]
     })
 
 @app.route("/api/user/<userid>")
@@ -55,14 +57,14 @@ def user_lookup(userid):
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT * FROM Account WHERE ID=%s LIMIT 1;",  str(userid))
     user = cursor.fetchone()
-    cursor.execute("SELECT * FROM Review WHERE AccountID=%s ORDER BY timestamp DESC LIMIT 5;", user[0])
+    cursor.execute("SELECT AlbumID, timestamp, Score, Liked, Content FROM Review WHERE AccountID=%s ORDER BY timestamp DESC LIMIT 5;", user[0])
     reviews = cursor.fetchall()
     
     return jsonify({
         "id":user[0],
         "name":user[1],
         "bio":user[5],
-        "reviews":[{"albumid":x[1], "timestamp":x[2], "score":x[3], "content":x[4], "flags":"000"} for x in reviews]
+        "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "userliked":False, "userflagged":False} for x in reviews]
     })
 
 @app.route("/api/albums")
