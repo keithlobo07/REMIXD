@@ -1,7 +1,16 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify
+from flaskext import mysql
+import requests, json
 
 app = Flask(__name__)
+
+@app.route('/')
+def home():
+    response = requests.get('https://www.theaudiodb.com/api/v1/json/123/searchalbum.php?s=daft_punk')
+    if response.status_code == 200:
+        data = response.json()
+        print(data['album'][00]['strAlbum'])
+    return data['album'][00]['strAlbum']
 
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
@@ -66,5 +75,5 @@ def album_search():
         ]
     })
 
-if __name__ == "__main__":
-    app.run()
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8000)
