@@ -1,7 +1,14 @@
-from flask import Flask
-from flask import jsonify
+from flask import Flask, jsonify, request
+from flaskext.mysql import MySQL
+
 
 app = Flask(__name__)
+sql = MySQL(app)
+
+app.config["MYSQL_DATABASE_HOST"] = "remixd.csumcw23kuop.us-east-1.rds.amazonaws.com"
+app.config["MYSQL_DATABASE_USER"] = "admin"
+app.config["MYSQL_DATABASE_PASSWORD"] = "O75BmgKdl9ZPnacoEwwQ"
+app.config["MYSQL_DATABASE_DB"] = "remixd"
 
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
@@ -34,24 +41,32 @@ def album_lookup(albumid):
 
 @app.route("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
+    limit = request.args.get('limit')
+    limit = int(limit) if limit != None else 5
+
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=%s ORDER BY Likes DESC LIMIT %s;", (albumid, limit))
+    results = cursor.fetchall()
+    cursor.close()
+
     return jsonify({
-        "reviews":[
-            {"id":"1", "name":"Rose", "rating":"10", "datetime":"1772451614", "flags":"011", "content":"I really like this album a whole lot."},
-            {"id":"2", "name":"Imran", "rating":"1", "datetime":"1772451679", "flags":"100", "content":"I fucking hate this album and i hate all other good music as well."},
-            {"id":"3", "name":"Bethany", "rating":"7", "datetime":"1772451785", "flags":"001", "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vel tellus dictum, pellentesque mauris ut, posuere dui. Quisque tortor est, consectetur et magna eu, blandit porttitor nunc."},
-            {"id":"4", "name":"Keith", "rating":"9", "datetime":"1772451958", "flags":"110", "content":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec dictum tortor at mauris aliquet imperdiet. Cras vitae tellus consectetur, imperdiet erat vel, pharetra lectus."}
-        ]
+        "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6], "userliked":False, "userreport":False} for x in results]
     })
 
 @app.route("/api/user/<userid>")
 def user_lookup(userid):
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT * FROM Account WHERE ID=%s LIMIT 1;",  str(userid))
+    user = cursor.fetchone()
+    cursor.execute("SELECT Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE Review.AccountID=%s ORDER BY Review.timestamp DESC LIMIT 5;", (userid))
+    reviews = cursor.fetchall()
+    cursor.close()
+    
     return jsonify({
-        "id":"1",
-        "name":"Rose",
-        "bio":"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec est felis, facilisis fringilla rhoncus eu, posuere et neque. Nam at massa sodales tortor placerat convallis sed euismod erat. Vestibulum euismod ipsum ut justo finibus scelerisque. Fusce dapibus pulvinar turpis ac tristique. Nulla vehicula urna eu dui congue, id sollicitudin augue auctor. Curabitur interdum ultricies urna, nec mattis massa lobortis vitae. Etiam quis facilisis purus. Suspendisse nec sagittis libero.",
-        "reviews":[
-            {"rating":"10", "datetime":"1772451614", "flags":"011", "content":"I really like this album a whole lot."}
-        ]
+        "id":user[0],
+        "name":user[1],
+        "bio":user[5],
+        "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "userliked":False, "userflagged":False} for x in reviews]
     })
 
 @app.route("/api/albums")
@@ -64,6 +79,45 @@ def album_search():
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
         ]
+    })
+
+@app.route("/api/review/<userid>/<albumid>")
+def review_lookup(userid, albumid):
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
+    data = cursor.fetchone()
+    cursor.close()
+
+    return jsonify({
+        "accountID":data[0],
+        "albumID":data[1],
+        "timestamp":data[2],
+        "score":data[3],
+        "liked":data[4],
+        "content":data[5],
+        "numLikes":data[6]
+    })
+
+@app.route("/api/admin/reviews")
+def admin_review_search():
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT *, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 64) AS Reports, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review ORDER BY Reports DESC LIMIT 5;")
+    results = cursor.fetchall()
+    cursor.close()
+
+    return jsonify({
+        "reviews":[{"accountID":x[0], "albumID":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "reports":x[6], "likes":x[7]} for x in results]
+    })
+
+@app.route("/api/admin/users")
+def admin_user_search():
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT ReviewAccountID, (SELECT Name FROM Account WHERE ID = Tags.ReviewAccountID) AS Name, COUNT(*) AS `Total Reports` FROM Tags WHERE info & 64 GROUP BY ReviewAccountID ORDER BY `Total Reports` LIMIT 5;")
+    results = cursor.fetchall()
+    cursor.close()
+
+    return jsonify({
+        "users":[{"accountID":x[0], "name":x[1], "numReports":x[2]} for x in results]
     })
 
 if __name__ == "__main__":
