@@ -1,7 +1,8 @@
 @import "../general.css";
 
-img {
-    border-radius: 0px;
+html, body {
+    overflow-x: hidden;
+    position: relative;
 }
 
 #header {
@@ -10,15 +11,8 @@ img {
     align-items: center;
 }
 
-
-
 #logoCol {
     max-width: 100px;
-}
-
-html, body {
-    overflow-x: hidden;
-    position: relative;
 }
 
 h1 {
@@ -32,7 +26,6 @@ h5 {
     justify-content: center;
 	display: flex;
     gap: 6px;
-	color: var(--theme-text);
 	font-size: 50px;
 	font-weight: 800;
 	letter-spacing: 5px;
