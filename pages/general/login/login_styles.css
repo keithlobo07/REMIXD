@@ -82,5 +82,6 @@ label {
     margin-top: 40px;
     padding: 10px 20px;
     transition: background-color 0.3s ease;
+    width: clamp(150px, 30vw, 300px);
 }
 
