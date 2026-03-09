@@ -15,12 +15,12 @@
         <!-- Custom CSS -->
         <link rel="stylesheet" href="landing_styles.css">
     </head>
-    <body>
+    <body class="d-flex flex-column justify-content-center">
         <!-- Background Video -->
         <video autoplay muted loop id="bg-video">
             <source src="lander-assets/lander-bg.mp4" type="video/mp4">
         </video>
-        <div class="container py-5 px-0 p-lg-5 text-center">
+        <div class="container-fluid py-5 px-0 p-lg-5 text-center">
             <div class="row">
                 <div class="col text-center">
                     <img src="../../../assets/remixd blue.png" alt="REMIXD Logo" class="img-fluid" style="max-width: 240px;">
@@ -28,24 +28,24 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-lg-4 offset-lg-2 gx-lg-2 col-12">
-                    <button type="button" class="landerBtn">
+                <div class="col-xxl-3 offset-xxl-3 gx-xl-3 col-lg-4 offset-lg-2 gx-lg-2 col-12">
+                    <button type="button" class="btn" id="signupBtn" onClick="window.location.href='../sign-up/signup.html'">
                         <span>Sign up</span>
-                        <img src="lander-assets/arrow-forward.svg" style="width: 24px; height: 24px;">
+                        <img src="lander-assets/arrow-forward.svg" id="arrow">
                     </button>
                 </div>
-                <div class="col-lg-4 col-12">
-                    <button type="button" class="landerBtn">
+                <div class="col-xxl-3 gx-xxl-3 col-lg-4 col-12">
+                    <button type="button" class="btn" id="loginBtn" onClick="window.location.href='../login/login.html'">
                         <span>Log in</span>
-                        <img src="lander-assets/arrow-forward.svg" style="width: 24px; height: 24px;">
+                        <img src="lander-assets/arrow-forward.svg" id="arrow">
                     </button>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12">
-                    <button type="button" class="landerBtn" id="guestBtn">
+                    <button type="button" class="btn" id="guestBtn">
                         <span>Continue as Guest</span>
-                        <img src="lander-assets/arrow-forward.svg" style="width: 24px; height: 24px;">
+                        <img src="lander-assets/arrow-forward.svg" id="arrow">
                     </button>
                 </div>
             </div>

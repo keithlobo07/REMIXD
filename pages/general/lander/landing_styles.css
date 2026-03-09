@@ -1,17 +1,16 @@
-:root {
-    --bg: #00132D;
-	--bg-gradient: linear-gradient(0deg, rgba(0, 19, 45, 0.70) 0%, rgba(0, 19, 45, 0.70) 100%);
-    --theme-text: #EFE9FF;
-    --button-default: #002657;
-}
+@import "../general.css";
 
 html,body {
 	background: var(--bg-gradient);
-    margin: 0;
-    font-family: DM Sans, sans-serif;
-    padding: 0;
-	width: 100%;
-	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	position: relative;
+}
+
+img {
+	border-radius: 0px;
 }
 
 h1 {
@@ -20,33 +19,35 @@ h1 {
     gap: 6px;
 	align-items: center;
 	text-align: center;
-	color: var(--theme-text);
 	font-size: clamp(56px, 8.2vw, 96px);
 	font-weight: 800;
 	letter-spacing: 5px;
     max-width: 570px;
 }
 
-.landerBtn {
+.btn {
 	margin-top: 40px;
-    width: 300px;
-	height: 84px;
-	border: none;
-	border-radius: 30px;
-	background: var(--button-default);
-	color: #fff;
-	font-family: "DM Sans", sans-serif;
-	font-size: 25px;
-	font-weight: 600;
-	line-height: normal;
-	justify-content: center;
-	align-items: center;
-	gap: 10px;
-	cursor: pointer;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+    width: clamp(200px, 30vw, 300px);
+	height: clamp(70px, 8vw, 84px);
+}
+
+#arrow {
+	width: clamp(20px, 2vw, 24px);
+	height: clamp(20px, 2vw, 24px);
+}
+
+#signupBtn {
+	font-size: clamp(16px, 2vw, 25px);
+}
+
+#loginBtn {
+	font-size: clamp(16px, 2vw, 25px);
 }
 
 #guestBtn {
-	font-size: 20px;
+	font-size: clamp(12px, 2vw, 20px);
 }
 
 .img-fluid {
@@ -61,8 +62,5 @@ h1 {
 	height: 100%;
 	object-fit: cover;
 	z-index: -1;
-}
-
-.p-5 {
-	padding: 5rem !important;
+	overflow: hidden;
 }
