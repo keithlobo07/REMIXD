@@ -1,0 +1,86 @@
+@import "../general.css";
+
+img {
+    border-radius: 0px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+}
+
+#logoCol {
+    max-width: 100px;
+}
+
+h1 {
+    justify-content: center;
+	display: flex;
+	font-size: clamp(52px, 8vw, 96px);
+	font-weight: 800;
+}
+
+h5 {
+    justify-content: center;
+	display: flex;
+    gap: 6px;
+	color: var(--theme-text);
+	font-size: 50px;
+	font-weight: 800;
+	letter-spacing: 5px;
+    max-width: 200px;
+}
+
+label {
+    align-items: start;
+}
+
+#loginForm {
+    margin-top: 4rem !important;
+}
+
+.form-label {
+    color: var(--theme-text);
+    font-size: clamp(16px, 8vw, 24px);
+    font-weight: 600;
+}
+
+#email, #password {
+    border-radius: 15px;
+    border: 1px solid #42427C;
+    background: rgba(0, 19, 45, 0.7);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(11.8px);
+    -webkit-backdrop-filter: blur(11.8px);
+    max-width: 100%;
+    height: 50px;
+    padding: 0 15px;
+    font-size: clamp(8px, 3.9vw, 18px);
+    caret-color: var(--theme-text);
+}
+
+.form-control{
+    color: var(--theme-text)
+}
+
+.form-control::placeholder {
+    color: #fff;
+    opacity: 0.8;
+}
+
+.form-control:focus {
+    color: var(--theme-text);
+}
+
+.form-control::-ms-reveal {
+    filter: invert(1);
+}
+
+.btn {
+    margin-top: 40px;
+    padding: 10px 20px;
+    transition: background-color 0.3s ease;
+}
+
