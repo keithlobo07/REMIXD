@@ -4,15 +4,21 @@ img {
     border-radius: 0px;
 }
 
-header {
+#header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px 40px;
 }
+
+
 
 #logoCol {
     max-width: 100px;
+}
+
+html, body {
+    overflow-x: hidden;
+    position: relative;
 }
 
 h1 {
@@ -38,12 +44,12 @@ label {
 }
 
 #loginForm {
-    margin-top: 4rem !important;
+    margin-top: clamp(2rem, 5vw, 4rem) !important;
 }
 
 .form-label {
     color: var(--theme-text);
-    font-size: clamp(16px, 8vw, 24px);
+    font-size: clamp(16px, 3vw, 24px);
     font-weight: 600;
 }
 
