@@ -1,0 +1,85 @@
+.dropbtn{
+    background: url(../../../assets/account_circle.png);
+    background-size: 40px;
+}
+
+.dropbtn:hover, .dropbtn:focus{
+
+}
+
+.dropdown{
+    position: relative;
+    display: inline-block;
+}
+
+.menuContent{
+    display: none;
+    position: absolute;
+    background-color: #002657;
+    min-width: 150px;
+    z-index: 1;
+    right:0;
+}
+
+.menuContent a{
+    color: white;
+    padding: 12px 16px;
+    display: block;
+}
+
+.menuContent a:hover{
+    background-color: #6284B0;
+}
+
+.show{
+    display:block;
+}
+
+#card{
+    /* item-card */
+    position: absolute;
+    width: 90%;
+    height: auto;
+    /* item card bg */
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 90%;
+    height: auto;
+    /* card-bg */
+    background: #002657;
+    /* card-stroke */
+    border: 1px solid #42427C;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 28px;
+}
+
+#sidebar{
+    /* sidebar */
+    background-image: linear-gradient(to bottom, #002657, #001143);
+}
+
+#search{
+    /* search-bar */
+    width: 100%;
+    height: 55px;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    /* search bar */
+    box-sizing: border-box;
+    width: 100%;
+    height: 55px;
+    background: rgba(0, 38, 87, 0.2);
+    /* card-stroke */
+    border: 1px solid #42427C;
+    border-radius: 50px;
+    color: #EFE9FF;
+}
+
+#dropdown, #dropbtn{
+    appearance: none;
+    background-color: rgba(0, 38, 87, 0.2);
+    color:#EFE9FF;
+    display: inline;
+    border: none;
+    background: none;
+    padding: 0;
+}
