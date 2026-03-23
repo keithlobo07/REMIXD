@@ -1,10 +1,7 @@
 .dropbtn{
     background: url(../../../assets/account_circle.png);
     background-size: 40px;
-}
-
-.dropbtn:hover, .dropbtn:focus{
-
+    border: none;
 }
 
 .dropdown{
@@ -74,7 +71,7 @@
     color: #EFE9FF;
 }
 
-#dropdown, #dropbtn{
+#dropdown{
     appearance: none;
     background-color: rgba(0, 38, 87, 0.2);
     color:#EFE9FF;
