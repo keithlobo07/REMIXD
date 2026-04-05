@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>REMIXD - Admin Dashboard</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap" rel="stylesheet">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <!-- Favicon -->
+        <link rel="icon" href="../../../assets/remixd-logo.png">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="adminDashboard_styles.css">
+    </head>
+    <body>
+        <div class="container justify-content-center justify-content-lg-start my-5 m-lg-5" id="header">
+            <div class="row">
+                <div class="col" id="logoCol">
+                    <img src="../../../assets/remixd blue.png" alt="REMIXD Logo" class="img-fluid" style="max-width: 80px;">
+                </div>
+                <div class="col ms-sm-3 align-self-center">
+                    <h5>REMIXD</h5>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid m-5 justify-content-center text-center" style="width: auto;">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <h1>Admin Dashboard</h1>
+                </div>
+            </div>
+            <div class="row column-gap-5 justify-content-center">
+                <div class="col-5 my-5" id="review">
+                    <div class="row">
+                        <h3><span class="badge rounded-pill" id="reviewNo">({toReview})</span>&ensp;To review:</h3>
+                    </div>
+                    
+                </div>
+                <div class="col-5 my-5" id="analytics">
+                    <div class="row">
+                        <h3>Review Analytics:</h3>
+                    </div>
+                    <div class="row">
+                        <canvas id="analytics_chart" style="margin: 30px 10px 30px 10px ;" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+                        
+        </div>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.min.js" integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y" crossorigin="anonymous"></script>
+        <!-- Chart.js -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
+        <!-- Admin Dashboard Script -->
+        <script src="adminDashboard_script.js"></script>
+    </body>
+</html>
