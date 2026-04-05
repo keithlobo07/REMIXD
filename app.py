@@ -1,4 +1,4 @@
-from flask import *
+from flask import * # type: ignore
 from flaskext.mysql import MySQL
 
 
@@ -46,7 +46,7 @@ def albums_reviews(albumid):
     limit = request.args.get('limit')
     limit = int(limit) if limit != None else 5
 
-    cursor = sql.get_db().cursor()
+    cursor = sql.get_db().cursor() # type: ignore
     cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=%s ORDER BY Likes DESC LIMIT %s;", (albumid, limit))
     results = cursor.fetchall()
     cursor.close()
@@ -57,7 +57,7 @@ def albums_reviews(albumid):
 
 @app.route("/api/user/<userid>")
 def user_lookup(userid):
-    cursor = sql.get_db().cursor()
+    cursor = sql.get_db().cursor() # type: ignore
     cursor.execute("SELECT * FROM Account WHERE ID=%s LIMIT 1;",  str(userid))
     user = cursor.fetchone()
     cursor.execute("SELECT Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE Review.AccountID=%s ORDER BY Review.timestamp DESC LIMIT 5;", (userid))
@@ -85,7 +85,7 @@ def album_search():
 
 @app.route("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
-    cursor = sql.get_db().cursor()
+    cursor = sql.get_db().cursor() # type: ignore
     cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
     data = cursor.fetchone()
     cursor.close()
@@ -102,7 +102,7 @@ def review_lookup(userid, albumid):
 
 @app.route("/api/admin/reviews")
 def admin_review_search():
-    cursor = sql.get_db().cursor()
+    cursor = sql.get_db().cursor() # type: ignore
     cursor.execute("SELECT *, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 64) AS Reports, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review ORDER BY Reports DESC LIMIT 5;")
     results = cursor.fetchall()
     cursor.close()
@@ -113,7 +113,7 @@ def admin_review_search():
 
 @app.route("/api/admin/users")
 def admin_user_search():
-    cursor = sql.get_db().cursor()
+    cursor = sql.get_db().cursor() # type: ignore
     cursor.execute("SELECT ReviewAccountID, (SELECT Name FROM Account WHERE ID = Tags.ReviewAccountID) AS Name, COUNT(*) AS `Total Reports` FROM Tags WHERE info & 64 GROUP BY ReviewAccountID ORDER BY `Total Reports` LIMIT 5;")
     results = cursor.fetchall()
     cursor.close()
@@ -126,7 +126,7 @@ def admin_user_search():
 def authenticate():
     email = request.form['email']
     password = request.form['password']
-    cursor = sql.get_db().cursor()
+    cursor = sql.get_db().cursor() # type: ignore
     cursor.execute("SELECT ID FROM Account WHERE email = %s AND password = %s", (email, password))
     results = cursor.fetchone()
     if results != None:
