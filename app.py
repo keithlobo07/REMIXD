@@ -186,7 +186,37 @@ def authenticate():
 def logout():
     if 'id' in session:
         session.pop('id', None)
-    return redirect(url_for("login_page")), 200
+    return redirect(url_for("lander")), 303
+
+@app.put("/api/signup")
+def signup():
+    if not 'id' in session:
+        email, password, username = request.form['email'], request.form['password'], request.form['username']
+        cursor = sql.get_db().cursor()
+
+        cursor.execute("SELECT Email FROM Account WHERE email = %s", (email))
+        results = cursor.fetchone()
+        if results == None:
+            # no user with this email -> add to database and login
+            cursor.execute("INSERT INTO Account (Name, Email, Password) VALUES (%s, %s, %s);", (username, email, password))
+            sql.get_db().commit()
+            cursor.execute("SELECT ID FROM Account WHERE email = %s", email)
+            r = cursor.fetchone()
+            session['id'] = r[0]
+            cursor.close()
+            return redirect(url_for('home')), 201
+        else:
+            # user with this email already exists
+            cursor.close()
+            return "email already exists", 409
+    else:
+        return redirect(url_for('home')), 303
+
+@app.route("/")
+def lander():
+    if 'id' in session:
+        return redirect(url_for('home')), 303
+    return render_template("lander.html"), 200
 
 @app.route("/home")
 def home():
@@ -201,9 +231,14 @@ def session_check():
 @app.route("/login")
 def login_page():
     if 'id' in session:
-        return redirect(url_for("home")), 200
+        return redirect(url_for("home")), 303
     return render_template("login.html"), 200
 
+@app.route("/signup")
+def signup_page():
+    if 'id' in session:
+        return redirect(url_for("home")), 303
+    return render_template("signup.html"), 200
 
 
 if __name__ == "__main__":
