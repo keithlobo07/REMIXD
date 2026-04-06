@@ -190,26 +190,29 @@ def logout():
 
 @app.put("/api/signup")
 def signup():
-    email, password, username = request.form['email'], request.form['password'], request.form['username']
-    cursor = sql.get_db().cursor()
+    if not 'id' in session:
+        email, password, username = request.form['email'], request.form['password'], request.form['username']
+        cursor = sql.get_db().cursor()
 
-    cursor.execute("SELECT Email FROM Account WHERE email = %s", (email))
-    results = cursor.fetchone()
-    if results == None:
-        # no user with this email
-        cursor.execute("INSERT INTO Account (Name, Email, Password) VALUES (%s, %s, %s);", (username, email, password))
-        sql.get_db().commit()
-        cursor.execute("SELECT ID FROM Account WHERE email = %s", email)
-        r = cursor.fetchone()
-        session['id'] = r[0]
-        cursor.close()
-        return redirect(url_for('home')), 201
+        cursor.execute("SELECT Email FROM Account WHERE email = %s", (email))
+        results = cursor.fetchone()
+        if results == None:
+            # no user with this email -> add to database and login
+            cursor.execute("INSERT INTO Account (Name, Email, Password) VALUES (%s, %s, %s);", (username, email, password))
+            sql.get_db().commit()
+            cursor.execute("SELECT ID FROM Account WHERE email = %s", email)
+            r = cursor.fetchone()
+            session['id'] = r[0]
+            cursor.close()
+            return redirect(url_for('home')), 201
+        else:
+            # user with this email already exists
+            cursor.close()
+            return "email already exists", 409
     else:
-        # user with this email already exists
-        cursor.close()
-        return "email already exists", 409
+        return redirect(url_for('home')), 200
 
-@app.route("/lander")
+@app.route("/")
 def lander():
     return render_template("lander.html"), 200
 
