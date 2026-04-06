@@ -186,7 +186,7 @@ def authenticate():
 def logout():
     if 'id' in session:
         session.pop('id', None)
-    return redirect(url_for("login_page")), 200
+    return redirect(url_for("lander")), 303
 
 @app.put("/api/signup")
 def signup():
