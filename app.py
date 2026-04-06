@@ -1,9 +1,11 @@
 from flask import *
 from flaskext.mysql import MySQL
+from argon2 import PasswordHasher
 
 
 app = Flask(__name__)
 sql = MySQL(app)
+ph = PasswordHasher()
 
 app.secret_key = "cf39da25450430eb49098ec3f99b19cb4977a00355dbfd822a46626c262e1179"
 
@@ -171,14 +173,28 @@ def admin_user_search():
 @app.post("/api/authenticate")
 def authenticate():
     email = request.form['email']
-    password = request.form['password']
+    given_password = request.form['password']
+
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT ID FROM Account WHERE email = %s AND password = %s", (email, password))
+    cursor.execute("SELECT ID, Password FROM Account WHERE email = %s", (email))
     results = cursor.fetchone()
+    
     if results != None:
-        session['id'] = results[0]
-        return redirect(url_for("home")), 303
-    else: # login failed
+        ID, password = results
+        try:
+            ph.verify(password, given_password)
+            session['id'] = ID
+            if (ph.check_needs_rehash(password)):
+                cursor.execute("UPDATE Account SET Password = %s WHERE ID = %s;" %(ph.hash(given_password)), ID)
+                sql.get_db().commit()
+            cursor.close()
+            return redirect(url_for("home")), 303
+        except:
+            # password didnt match
+            cursor.close()
+            return redirect(url_for("login_page")), 403
+    else: # email didnt match
+        cursor.close()
         return redirect(url_for("login_page")), 403
 
 
@@ -192,16 +208,23 @@ def logout():
 def signup():
     if not 'id' in session:
         email, password, username = request.form['email'], request.form['password'], request.form['username']
+        
         cursor = sql.get_db().cursor()
-
         cursor.execute("SELECT Email FROM Account WHERE email = %s", (email))
         results = cursor.fetchone()
+
         if results == None:
             # no user with this email -> add to database and login
-            cursor.execute("INSERT INTO Account (Name, Email, Password) VALUES (%s, %s, %s);", (username, email, password))
+            cursor.execute("INSERT INTO Account (Name, Email, Password) VALUES (%s, %s, %s);", (username, email, ph.hash(password)))
             sql.get_db().commit()
             cursor.execute("SELECT ID FROM Account WHERE email = %s", email)
             r = cursor.fetchone()
+            
+            if r == None:
+                # some messed up database connection error would have to happen to get here but ill account for it
+                cursor.close()
+                return "database fucked up", 500
+            
             session['id'] = r[0]
             cursor.close()
             return redirect(url_for('home')), 201
@@ -242,4 +265,4 @@ def signup_page():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(ssl_context='adhoc')
