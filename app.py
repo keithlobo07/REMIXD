@@ -210,10 +210,12 @@ def signup():
             cursor.close()
             return "email already exists", 409
     else:
-        return redirect(url_for('home')), 200
+        return redirect(url_for('home')), 303
 
 @app.route("/")
 def lander():
+    if 'id' in session:
+        return redirect(url_for('home')), 303
     return render_template("lander.html"), 200
 
 @app.route("/home")
@@ -229,13 +231,13 @@ def session_check():
 @app.route("/login")
 def login_page():
     if 'id' in session:
-        return redirect(url_for("home")), 200
+        return redirect(url_for("home")), 303
     return render_template("login.html"), 200
 
 @app.route("/signup")
 def signup_page():
     if 'id' in session:
-        return redirect(url_for("home")), 200
+        return redirect(url_for("home")), 303
     return render_template("signup.html"), 200
 
 
