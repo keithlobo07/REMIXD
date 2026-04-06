@@ -39,11 +39,11 @@ CREATE TABLE `Tags` (
     PRIMARY KEY (AccountID,ReviewAccountID,ReviewAlbumID)
 );
 
-DROP TABLE IF EXISTS `Tokens`;
-CREATE TABLE `Tokens` (
-	SessionID bigint NOT NULL,
-    AccountID int NOT NULL,
-    timestamp timestamp NOT NULL default CURRENT_TIMESTAMP,
-    PRIMARY KEY (SessionID),
-    FOREIGN KEY (AccountID) REFERENCES Account(ID)
-);
+#DROP TABLE IF EXISTS `Tokens`;
+#CREATE TABLE `Tokens` (
+#	SessionID bigint NOT NULL,
+#    AccountID int NOT NULL,
+#    timestamp timestamp NOT NULL default CURRENT_TIMESTAMP,
+#    PRIMARY KEY (SessionID),
+#    FOREIGN KEY (AccountID) REFERENCES Account(ID)
+#);
