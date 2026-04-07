@@ -182,27 +182,31 @@ def authenticate():
     if results != None:
         ID, password = results
         try:
+            # throws an exception if the hash doesnt match
             ph.verify(password, given_password)
             session['id'] = ID
+
+            # good practice to rehash passwords where necessary
             if (ph.check_needs_rehash(password)):
                 cursor.execute("UPDATE Account SET Password = %s WHERE ID = %s;" %(ph.hash(given_password)), ID)
                 sql.get_db().commit()
             cursor.close()
-            return redirect(url_for("home")), 303
+
+            return redirect(url_for("home")), 303 # = See Other (redirect w/ get)
         except:
             # password didnt match
             cursor.close()
-            return redirect(url_for("login_page")), 403
+            return redirect(url_for("login_page")), 403 # = Forbidden
     else: # email didnt match
         cursor.close()
-        return redirect(url_for("login_page")), 403
+        return redirect(url_for("login_page")), 403 # = Forbidden
 
 
 @app.route("/api/logout")
 def logout():
     if 'id' in session:
         session.pop('id', None)
-    return redirect(url_for("lander")), 303
+    return redirect(url_for("lander")), 303 # = See Other (redirect w/ get)
 
 @app.put("/api/signup")
 def signup():
@@ -223,45 +227,46 @@ def signup():
             if r == None:
                 # some messed up database connection error would have to happen to get here but ill account for it
                 cursor.close()
-                return "database fucked up", 500
+                return {"message", "error occured when retreiving id from database"}, 500 # = Internal Server Error
             
             session['id'] = r[0]
             cursor.close()
-            return redirect(url_for('home')), 201
+            return redirect(url_for('home')), 201 # = Created
         else:
             # user with this email already exists
             cursor.close()
-            return "email already exists", 409
+            return {"message": "email already exists"}, 409 # = Conflict
     else:
-        return redirect(url_for('home')), 303
+        return redirect(url_for('home')), 303 # = See Other (redirect w/ get)
 
 @app.route("/")
 def lander():
     if 'id' in session:
-        return redirect(url_for('home')), 303
-    return render_template("lander.html"), 200
+        return redirect(url_for('home')), 303 # = See Other (redirect w/ get)
+    return render_template("lander.html"), 200 # = OK
 
 @app.route("/home")
 def home():
-    return render_template("allAlbumView.html"), 200
+    return render_template("allAlbumView.html"), 200 # = OK
 
 @app.route("/api/session")
 def session_check():
+    # use this to check if you are logged in
     if 'id' in session:
-        return "logged in as %d" %session['id']
-    return "not logged in"
+        return {"message": "logged in as %d" %session['id']}, 200 # = OK
+    return {"message": "not logged in"}, 200 # = OK
 
 @app.route("/login")
 def login_page():
     if 'id' in session:
-        return redirect(url_for("home")), 303
-    return render_template("login.html"), 200
+        return redirect(url_for("home")), 303 # = See Other (redirect w/ get)
+    return render_template("login.html"), 200 # = OK
 
 @app.route("/signup")
 def signup_page():
     if 'id' in session:
-        return redirect(url_for("home")), 303
-    return render_template("signup.html"), 200
+        return redirect(url_for("home")), 303 # = See Other (redirect w/ get)
+    return render_template("signup.html"), 200 # = OK
 
 
 if __name__ == "__main__":
