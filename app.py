@@ -200,6 +200,21 @@ def admin_stats():
         "data":results
     })
 
+@app.route("/api/admin/ban/<userid>")
+def ban_user(userid):
+    if (not is_admin()):
+        return {"message": "insufficient permissions"}, 409 # = Forbidden
+    
+    cursor = sql.get_db().cursor()
+    cursor.execute("UPDATE Account SET modFlags = 1 WHERE ID = %s;", userid)
+    sql.get_db().commit()
+
+    if (cursor.rowcount == 0):
+        return {"message": "no user with id %s found" %userid}, 404 # = Not Found
+    else:
+        
+        return {"message":"user %s banned" %userid}, 200 # = Complete
+
 @app.post("/api/authenticate")
 def authenticate():
     email = request.form['email']
@@ -269,6 +284,19 @@ def signup():
     else:
         return redirect(url_for('home')), 303 # = See Other (redirect w/ get)
 
+@app.put("/api/review")
+def post_review():
+    if not 'id' in session:
+        return "", 409
+    
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT modTags FROM Account WHERE ID = %s;" %session['id'])
+    result = cursor.fetchone()[0]
+    if result & 1:
+        return "", 409
+
+    ID, score, content = request.form['id'], request.form['score'], request.form['content']
+
 @app.route("/")
 def lander():
     if 'id' in session:
@@ -282,6 +310,8 @@ def home():
 @app.route("/api/session")
 def session_check():
     # use this to check if you are logged in
+    [print(x, session[x]) for x in session]
+
     if 'id' in session:
         return {"message": "logged in as %d" %session['id']}, 200 # = OK
     return {"message": "not logged in"}, 200 # = OK
