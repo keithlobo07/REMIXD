@@ -152,8 +152,18 @@ def review_lookup(userid, albumid):
             "numLikes":data[6]
         })
 
+def is_admin():
+    if not 'id' in session:
+        return False
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT isAdmin FROM Account WHERE ID = %s;", session['id'])
+    result = cursor.fetchone()
+    return result[0]
+
 @app.route("/api/admin/reviews")
 def admin_review_search():
+    if (not is_admin()):
+        return {"message": "insufficient permissions"}, 409 # = Forbidden
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT *, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 64) AS Reports, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review ORDER BY Reports DESC LIMIT 5;")
     results = cursor.fetchall()
@@ -165,6 +175,8 @@ def admin_review_search():
 
 @app.route("/api/admin/users")
 def admin_user_search():
+    if (not is_admin()):
+        return {"message": "insufficient permissions"}, 409 # = Forbidden
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT ReviewAccountID, (SELECT Name FROM Account WHERE ID = Tags.ReviewAccountID) AS Name, COUNT(*) AS `Total Reports` FROM Tags WHERE info & 64 GROUP BY ReviewAccountID ORDER BY `Total Reports` LIMIT 5;")
     results = cursor.fetchall()
@@ -176,6 +188,8 @@ def admin_user_search():
 
 @app.route("/api/admin/statistics")
 def admin_stats():
+    if (not is_admin()):
+        return {"message": "insufficient permissions"}, 409 # = Forbidden
     cursor = sql.get_db().cursor()
     # yes this query is a nightmare but it works in one query and thats better than it being good and not working
     cursor.execute("SELECT (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 0 MONTH)),(SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 2 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 1 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 13 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 2 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 4 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 3 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 5 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 4 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 6 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 5 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 7 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 6 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 8 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 7 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 9 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 8 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 10 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 9 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 11 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 10 MONTH)), (SELECT COUNT(*) FROM Review WHERE timestamp BETWEEN DATE_SUB(CURDATE(), INTERVAL 12 MONTH) AND DATE_SUB(DATE_ADD(CURDATE(), INTERVAL 1 DAY), INTERVAL 11 MONTH));")
