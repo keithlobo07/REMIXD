@@ -174,6 +174,17 @@ def admin_user_search():
         "users":[{"accountID":x[0], "name":x[1], "numReports":x[2]} for x in results]
     })
 
+@app.route("/api/admin/statistics")
+def admin_stats():
+    cursor = sql.get_db().cursor()
+    cursor.execute()
+    results = cursor.fetchone()
+    cursor.close()
+
+    return jsonify({
+        "data":[]
+    })
+
 @app.post("/api/authenticate")
 def authenticate():
     email = request.form['email']
