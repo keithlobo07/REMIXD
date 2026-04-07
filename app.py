@@ -257,6 +257,9 @@ def login_page():
         return redirect(url_for("home")), 303
     return render_template("login.html"), 200
 
+@app.route("/admin")
+def admin_page():
+    return render_template("adminDashboard.html"), 200
 @app.route("/signup")
 def signup_page():
     if 'id' in session:
