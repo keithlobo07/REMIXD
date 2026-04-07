@@ -20,10 +20,14 @@
         <div class="container justify-content-center justify-content-lg-start my-5 m-lg-5" id="header">
             <div class="row">
                 <div class="col" id="logoCol">
-                    <img src="{{ url_for('static', filename='assets/remixd blue.png')}}" alt="REMIXD Logo" class="img-fluid" style="max-width: 80px;">
+                    <a class="a-logo" href="{{ url_for('lander') }}">
+                        <img src="{{ url_for('static', filename='assets/remixd blue.png')}}" alt="REMIXD Logo" class="img-fluid" style="max-width: 80px;">
+                    </a>
                 </div>
                 <div class="col ms-sm-3 align-self-center">
-                    <h5>REMIXD</h5>
+                    <a class="a-logo" href="{{ url_for('lander') }}">
+                        <h5>REMIXD</h5>
+                    </a>
                 </div>
             </div>
         </div>

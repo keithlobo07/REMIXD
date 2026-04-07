@@ -60,3 +60,7 @@ main, footer{
     color: var(--theme-text);
     border: none;
 }
+
+.a-logo {
+    text-decoration: none;
+}
