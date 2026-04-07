@@ -204,7 +204,9 @@ def login_page():
         return redirect(url_for("home")), 200
     return render_template("login.html"), 200
 
-
+@app.route("/admin")
+def admin_page():
+    return render_template("adminDashboard.html"), 200
 
 if __name__ == "__main__":
     app.run()
