@@ -25,18 +25,28 @@ def authenticate():
                 sql.get_db().commit()
             cursor.close()
 
-            return redirect(url_for("home")), 303 # = See Other (redirect w/ get)
+            return redirect(url_for("pages.home")), 303 # = See Other (redirect w/ get)
         except:
             # password didnt match
             cursor.close()
-            return redirect(url_for("login_page")), 403 # = Forbidden
+            return redirect(url_for("pages.login_page")), 403 # = Forbidden
     else: # email didnt match
         cursor.close()
-        return redirect(url_for("login_page")), 403 # = Forbidden
+        return redirect(url_for("pages.login_page")), 403 # = Forbidden
 
 
 @utils.route("/api/logout")
 def logout():
     if 'id' in session:
         session.pop('id', None)
-    return redirect(url_for("lander")), 303 # = See Other (redirect w/ get)
+    return redirect(url_for("pages.lander")), 303 # = See Other (redirect w/ get)
+
+
+@utils.route("/api/session")
+def session_check():
+    # use this to check if you are logged in
+    [print(x, session[x]) for x in session]
+
+    if 'id' in session:
+        return {"message": "logged in as %d" %session['id']}, 200 # = OK
+    return {"message": "not logged in"}, 200 # = OK

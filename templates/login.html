@@ -35,7 +35,7 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-6 col-lg-4 text-start">
-                    <form id="loginForm" name="loginForm" method="POST" action="{{ url_for('authenticate') }}">
+                    <form id="loginForm" name="loginForm" method="POST" action="{{ url_for('utils.authenticate') }}">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
                             <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email">
@@ -47,7 +47,7 @@
                     </form>
                 </div>
                 <div class="col-12 align-content-center mx-auto">
-                    <button type="submit" class="btn" onClick="returnLoginInfo('{{ url_for('authenticate') }}', '{{ url_for('home') }}')" id="submitbutton">
+                    <button type="submit" class="btn" onClick="returnLoginInfo('{{ url_for('utils.authenticate') }}', '{{ url_for('pages.home') }}')" id="submitbutton">
                         <span>Log in</span>
                         <img src="{{ url_for('static', filename='assets/arrow-forward.svg')}}" style="width: 24px; height: 24px;">
                     </button>

@@ -56,10 +56,10 @@ def signup():
             
             session['id'] = r[0]
             cursor.close()
-            return redirect(url_for('home')), 201 # = Created
+            return redirect(url_for('pages.home')), 201 # = Created
         else:
             # user with this email already exists
             cursor.close()
             return {"message": "email already exists"}, 409 # = Conflict
     else:
-        return redirect(url_for('home')), 303 # = See Other (redirect w/ get)
+        return redirect(url_for('pages.home')), 303 # = See Other (redirect w/ get)
