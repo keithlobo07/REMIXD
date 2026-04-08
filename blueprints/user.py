@@ -97,3 +97,15 @@ def update_user(userid):
     sql.get_db().commit()
     return {"message": message}, 200
 
+@users.delete("/api/user/<userid>")
+def delete_user(userid):
+    if session['id'] != userid and not is_admin():
+        return {"message": "insufficient permissions"}, 403 # = Forbidden
+    
+    cursor = sql.get_db().cursor()
+    cursor.execute("DELETE FROM Account WHERE ID = %s;", userid)
+    if cursor.rowcount == 0:
+        cursor.close()
+        return {"message": "user with id %s not found" %userid}, 404 # = Not Found
+    cursor.close()
+    return {"message": "user with id %s deleted" %userid}, 200 # = OK
