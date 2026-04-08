@@ -29,3 +29,7 @@
     border: 1px solid #EFE9FF;
     border-radius: 20px;
 }
+
+.modal-content{
+    background-color: #0F2C52;
+}

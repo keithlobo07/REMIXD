@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import *
 from flaskext.mysql import MySQL
 
 
@@ -119,6 +119,18 @@ def admin_user_search():
     return jsonify({
         "users":[{"accountID":x[0], "name":x[1], "numReports":x[2]} for x in results]
     })
+
+@app.route("/user")
+def user_page():
+    return render_template("userView.html")
+
+@app.route("/home")
+def home():
+    return render_template("allAlbumView.html")
+
+@app.route("/albumView")
+def album_view():
+    return render_template("albumView.html")
 
 if __name__ == "__main__":
     app.run()

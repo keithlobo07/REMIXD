@@ -1,19 +1,19 @@
 <HTML>
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="..\general.css">
-    <link rel="stylesheet" href="allAlbumView-style.css">
-    <link rel="icon" href="..\..\..\assets/remixd-logo.png">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/allAlbumView-style.css')}}">
+    <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
     <title>REMIXD - Albumn View</title>
 </head>
-<script src="allAlbumView-java.js"></script>
+<script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
 
 <main style="height:100%; width: 100%">
 <div class="container-fluid">
     <div class="row" style="height:100%;">
         <div class="col-4" id="sidebar">
             <!--LOGO AND FILERS-->
-            <img src="..\..\..\assets/remixd blue.png" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
+            <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
             <h2>REMIXD</h2>
             <p>
             <p>
@@ -29,7 +29,7 @@
                                 <option>High to Low</option>
                                 <option>Low to High</option>
                             </select>
-                            <img src="allAlbumView-assets/keyboard_arrow_down.png">
+                            <img src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}">
                         </div>
                     </div>
                     <div id="row">
@@ -41,7 +41,7 @@
                                 <option>High to Low</option>
                                 <option>Low to High</option>
                             </select>
-                            <img src="allAlbumView-assets/keyboard_arrow_down.png">
+                            <img src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}">
                         </div>
                     </div>
                 </div>
@@ -88,7 +88,7 @@
                                                     <h5>Album</h5>
                                                 </div>
                                                 <div class="col-4 text-right">
-                                                    <img src="allAlbumView-assets/starPlaceH.png" alt="stars PLACEHOLDER" style="max-width:100px;">
+                                                    <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" style="max-width:100%">
                                                 </div>
                                                 <div class="col-3">
                                                     <p>5.0 (3478)</p>
