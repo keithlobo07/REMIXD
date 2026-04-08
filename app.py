@@ -43,6 +43,15 @@ def album_lookup(albumid):
             "Now or Never"
         ]})
 
+def album_review_info(albumid):
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT COUNT(*), AVG(Score) FROM Review WHERE AlbumID = %s;", albumid)
+    reviews, avg_score = cursor.fetchone()[0]
+    cursor.close()
+
+    return {"numReviews":reviews, "avgScore":avg_score}
+
+
 @app.route("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
     limit = request.args.get('limit')
