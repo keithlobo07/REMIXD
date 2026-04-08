@@ -1,5 +1,6 @@
 from flask import *
 from app import sql
+from admin import is_admin
 
 reviews = Blueprint('reviews', __name__)
 
@@ -49,7 +50,7 @@ def post_review():
     if result & 1:
         return {"message": "account banned from posting reviews"}, 409
 
-    ID, score, content = request.form['id'], request.form['score'], request.form['content']
+    album_id, score, content = request.form['album_id'], request.form['score'], request.form['content']
 
     # finish when bethany finishes review page
 
@@ -64,8 +65,33 @@ def update_review():
     if result & 1:
         return {"message": "account banned from posting reviews"}, 409
     
-    ID, score, content = request.form['id'], request.form['score'], request.form['content']
+    album_id, score, content = request.form['album_id'], request.form['score'], request.form['content']
 
-    cursor.execute("UPDATE Review SET Score=%s, Content=%s WHERE ID = %s;", ID, score, content)
+    cursor.execute("SELECT * FROM Review WHERE AccountID = %s AND AlbumID = %s", (session['id'], album_id))
+    res = cursor.fetchone()
+    if res == None:
+        return {"message": "no review found by user with id %s for album with id %s" %(session['id'], album_id)}, 404
+
+    cursor.execute("UPDATE Review SET Score=%s, Content=%s WHERE ID = %s;", (score, content, session['id']))
 
     # finish when bethany finishes review page
+
+@reviews.delete("/api/review")
+def delete_review():
+    if not 'id' in session:
+        return {"message": "not logged in"}, 409
+    
+    account_id, album_id = request.form['account_id'], request.form['album_id']
+    
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT * FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
+
+    if session['id'] == account_id or is_admin():
+        if cursor.rowcount > 0:
+            cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
+            sql.get_db().commit()
+            return {"message": "review by user with id %s for album with id %s deleted" %(account_id, album_id)}, 200 # = OK
+        else:
+            return {"message": "no review found by user with id %s for album with id %s" %(account_id, album_id)}, 404 # = Not Found
+    else:
+        return {"message": "insufficient permissions"}, 409 # = Forbidden
