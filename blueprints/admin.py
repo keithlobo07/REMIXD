@@ -15,6 +15,7 @@ def is_admin():
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT isAdmin FROM Account WHERE ID = %s;", session['id'])
     result = cursor.fetchone()
+    cursor.close()
     return result[0]
 
 @admins.route("/api/admin/reviews")

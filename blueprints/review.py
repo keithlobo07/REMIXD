@@ -46,7 +46,7 @@ def review_lookup(userid, albumid):
 @reviews.post("/api/review")
 def post_review():
     if not 'id' in session:
-        return {"message": "not logged in"}, 403
+        return {"message": "not logged in"}, 400
     
     if is_banned():
         return {"message": "account banned from posting reviews"}, 403
@@ -58,7 +58,7 @@ def post_review():
 @reviews.put("/api/review/<userid>/<albumid>")
 def update_review(account_id, album_id):
     if not 'id' in session:
-        return {"message": "not logged in"}, 403
+        return {"message": "not logged in"}, 400
 
     if is_banned():
         return {"message": "account banned from editing reviews"}, 403
@@ -75,6 +75,7 @@ def update_review(account_id, album_id):
     if session['id'] == res[0] or is_admin():
         cursor.execute("UPDATE Review SET Score=%s, Content=%s WHERE ID = %s;", (score, content, session['id']))
         sql.get_db().commit()
+        cursor.close()
         return jsonify(review_data(account_id, album_id)), 200
 
     # finish when bethany finishes review page
@@ -82,14 +83,16 @@ def update_review(account_id, album_id):
 @reviews.delete("/api/review/<userid>/<albumid>")
 def delete_review(account_id, album_id):
     if session['id'] != account_id and not is_admin():
-        return {"message": "insufficient permissions"}, 403 # = Forbidden
+        return {"message": "insufficient permissions"}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()
     cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
     sql.get_db().commit()
     if cursor.rowcount > 0:
+        cursor.close()
         return {"message": "review by user with id %s for album with id %s deleted" %(account_id, album_id)}, 200 # = OK
     else:
+        cursor.close()
         return {"message": "no review found by user with id %s for album with id %s" %(account_id, album_id)}, 404 # = Not Found
 
 @reviews.post("/api/review/<userid>/<albumid>/tags")
@@ -101,5 +104,7 @@ def update_review_tags(userid, albumid):
     cursor = sql.get_db().cursor()
     cursor.execute("UPDATE Tags SET Tags = %s WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (tags, session['id'], review_account_id, review_album_id))
     if (cursor.rowcount == 0):
+        cursor.close()
         return {"message": "something went wrong"}, 500 # = Internal Server Error
+    cursor.close()
     return {"message": "tags updated"}, 200 # = OK

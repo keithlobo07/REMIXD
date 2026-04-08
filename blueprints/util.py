@@ -45,7 +45,6 @@ def logout():
 @utils.route("/api/session")
 def session_check():
     # use this to check if you are logged in
-    [print(x, session[x]) for x in session]
 
     if 'id' in session:
         return {"message": "logged in as %d" %session['id']}, 200 # = OK

@@ -10,10 +10,10 @@ def is_banned():
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT modTags FROM Account WHERE ID = %s;" %(session['id']))
     result = cursor.fetchone()[0]
+    cursor.close()
     return bool(result & 1)
 
-@users.get("/api/user/<userid>")
-def user_lookup(userid):
+def user_data(userid):
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT * FROM Account WHERE ID=%s LIMIT 1;",  str(userid))
     user = cursor.fetchone()
@@ -23,24 +23,28 @@ def user_lookup(userid):
         reviews = cursor.fetchall()
         cursor.close()
         
-        return jsonify({
+        return {
             "id":user[0],
             "name":user[1],
             "bio":user[5],
             "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "user_liked":x[6], "user_flagged":x[7]} for x in reviews]
-        })
+        }
     else:
         # no login -> anonymous data
         cursor.execute("SELECT Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE Review.AccountID=%s ORDER BY Review.timestamp DESC LIMIT 5;", (userid))
         reviews = cursor.fetchall()
         cursor.close()
         
-        return jsonify({
+        return {
             "id":user[0],
             "name":user[1],
             "bio":user[5],
             "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "user_liked":x[6], "user_report":x[7]} for x in reviews]
-        })
+        }
+
+@users.get("/api/user/<userid>")
+def user_lookup(userid):
+    return jsonify(user_data(userid))
 
 @users.post("/api/user")
 def signup():
@@ -95,6 +99,8 @@ def update_user(userid):
         message == "bio updated. "
     
     sql.get_db().commit()
+    cursor.close()
+
     return {"message": message}, 200
 
 @users.delete("/api/user/<userid>")
