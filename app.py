@@ -71,7 +71,10 @@ def user_lookup(userid):
 
 @app.route("/api/albums")
 def album_search():
-    return jsonify({
+    return jsonify(album_search_data())
+
+def album_search_data():
+    return {
         "albums":[
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
@@ -79,6 +82,24 @@ def album_search():
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
         ]
+    }
+
+
+@app.route("/api/review/<userid>/<albumid>")
+def review_lookup(userid, albumid):
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
+    data = cursor.fetchone()
+    cursor.close()
+
+    return jsonify({
+        "accountID":data[0],
+        "albumID":data[1],
+        "timestamp":data[2],
+        "score":data[3],
+        "liked":data[4],
+        "content":data[5],
+        "numLikes":data[6]
     })
 
 @app.route("/api/review/<userid>/<albumid>")
@@ -124,13 +145,14 @@ def admin_user_search():
 def user_page():
     return render_template("userView.html")
 
-@app.route("/home")
-def home():
-    return render_template("allAlbumView.html")
-
 @app.route("/albumView")
 def album_view():
     return render_template("albumView.html")
+@app.route("/home")
+def home():
+    albums = album_search_data()['albums']
+    print(albums)
+    return render_template("allAlbumView.html", albums=albums)
 
 if __name__ == "__main__":
     app.run()
