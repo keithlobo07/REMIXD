@@ -1,0 +1,113 @@
+function getReviewCount() {
+    // To be implemented: fetch the number of reviews that need to be done and update the badge
+    
+    // Placeholder:
+    const reviewCount = 5; // Replace with actual count from backend
+    document.getElementById('reviewNo').textContent = `(${reviewCount})`;
+}
+
+// Call the function to get the review count when the page loads
+window.onload = getReviewCount();
+
+function loadAnalytics() {
+    
+
+    const ctx = document.getElementById('analytics_chart');
+
+    const chartData = {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        datasets: [{
+            backgroundColor: "rgba(210, 252, 255, 0.2)",
+            borderColor: "rgba(210, 252, 255, 1)",
+            data: [12, 19, 3, 5, 2, 3, 7, 8, 6, 4, 9, 10], // Placeholder data - replace with actual data from backend
+            borderWidth: 1,
+            borderRadius: 5
+        }]
+    }
+
+    Chart.defaults.style = "bold";
+    Chart.defaults.color = "#EFE9FF";
+    Chart.defaults.font.family = "DM Sans, sans-serif";
+    Chart.defaults.plugins.tooltip.titleFont.size = 16;
+    Chart.defaults.plugins.tooltip.backgroundColor = "#1d4376";
+
+    new Chart(ctx, {
+        type: "bar",
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: "#EFE9FF",
+                        font: {family: "DM Sans, sans-serif", size: 14},
+                        stepSize: 10 // Adjust step size as needed from backend data range
+                    }
+                }
+            },
+            plugins: {
+                legend: { display: false},
+                title: {
+                    display: true,
+                    text: "Reviews in the Past 12 Months",
+                    color: "#EFE9FF",
+                    font: {
+                        family: "DM Sans, sans-serif",
+                        size: 25}
+                },
+                tooltip: {
+                    titleFont: {
+                        family: "DM Sans, sans-serif",
+                        size: 14
+                    }
+                }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+
+}
+
+/*
+function loadAnalytics0() {
+    
+    const ctx = document.getElementById('analytics_chart').getContext('2d');
+    // Placeholder for chart data - replace with actual data from backend
+    const chartData = {
+        labels: ['Category 1', 'Category 2', 'Category 3'],
+        datasets: [{
+            label: 'Number of Reviews',
+            data: [12, 19, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 205, 86, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 205, 86, 1)'
+            ],
+            borderWidth: 1
+        }]
+    };
+
+    // Create the chart
+    const myChart = new myChart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+*/
+
+// Call the function to load analytics when the page loads
+window.onload = loadAnalytics();
