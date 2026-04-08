@@ -33,8 +33,6 @@ def user_lookup(userid):
             "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "user_liked":x[6], "user_report":x[7]} for x in reviews]
         })
 
-
-
 @users.post("/api/user")
 def signup():
     if not 'id' in session:
