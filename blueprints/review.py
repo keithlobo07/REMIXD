@@ -81,18 +81,13 @@ def update_review(account_id, album_id):
 
 @reviews.delete("/api/review/<userid>/<albumid>")
 def delete_review(account_id, album_id):
-    if not 'id' in session:
-        return {"message": "not logged in"}, 403
+    if session['id'] != account_id and not is_admin():
+        return {"message": "insufficient permissions"}, 403 # = Forbidden
     
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT * FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
-
-    if session['id'] == account_id or is_admin():
-        if cursor.rowcount > 0:
-            cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
-            sql.get_db().commit()
-            return {"message": "review by user with id %s for album with id %s deleted" %(account_id, album_id)}, 200 # = OK
-        else:
-            return {"message": "no review found by user with id %s for album with id %s" %(account_id, album_id)}, 404 # = Not Found
+    cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
+    sql.get_db().commit()
+    if cursor.rowcount > 0:
+        return {"message": "review by user with id %s for album with id %s deleted" %(account_id, album_id)}, 200 # = OK
     else:
-        return {"message": "insufficient permissions"}, 403 # = Forbidden
+        return {"message": "no review found by user with id %s for album with id %s" %(account_id, album_id)}, 404 # = Not Found
