@@ -3,6 +3,14 @@ from app import sql, ph
 
 users = Blueprint('users', __name__)
 
+def is_banned():
+    if not 'id' in session:
+        return False
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT modTags FROM Account WHERE ID = %s;" %(session['id']))
+    result = cursor.fetchone()[0]
+    return bool(result & 1)
+
 @users.get("/api/user/<userid>")
 def user_lookup(userid):
     cursor = sql.get_db().cursor()
