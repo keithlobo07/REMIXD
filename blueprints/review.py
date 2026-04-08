@@ -91,3 +91,15 @@ def delete_review(account_id, album_id):
         return {"message": "review by user with id %s for album with id %s deleted" %(account_id, album_id)}, 200 # = OK
     else:
         return {"message": "no review found by user with id %s for album with id %s" %(account_id, album_id)}, 404 # = Not Found
+
+@reviews.post("/api/review/<userid>/<albumid>/tags")
+def update_review_tags(userid, albumid):
+    if not 'id' in session:
+        return {"message": "not logged in"}, 400 # = Bad Request
+    
+    tags, review_account_id, review_album_id = request.form['tags'], request.form['review_account_id'], request.form['review_album_id']
+    cursor = sql.get_db().cursor()
+    cursor.execute("UPDATE Tags SET Tags = %s WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (tags, session['id'], review_account_id, review_album_id))
+    if (cursor.rowcount == 0):
+        return {"message": "something went wrong"}, 500 # = Internal Server Error
+    return {"message": "tags updated"}, 200 # = OK
