@@ -46,10 +46,10 @@ def review_lookup(userid, albumid):
 @reviews.post("/api/review")
 def post_review():
     if not 'id' in session:
-        return {"message": "not logged in"}, 409
+        return {"message": "not logged in"}, 403
     
     if is_banned():
-        return {"message": "account banned from posting reviews"}, 409
+        return {"message": "account banned from posting reviews"}, 403
 
     album_id, score, content = request.form['album_id'], request.form['score'], request.form['content']
 
@@ -58,10 +58,10 @@ def post_review():
 @reviews.put("/api/review/<userid>/<albumid>")
 def update_review(account_id, album_id):
     if not 'id' in session:
-        return {"message": "not logged in"}, 409
+        return {"message": "not logged in"}, 403
 
     if is_banned():
-        return {"message": "account banned from editing reviews"}, 409
+        return {"message": "account banned from editing reviews"}, 403
 
     score, content = request.form['score'], request.form['content']
 
@@ -82,7 +82,7 @@ def update_review(account_id, album_id):
 @reviews.delete("/api/review/<userid>/<albumid>")
 def delete_review(account_id, album_id):
     if not 'id' in session:
-        return {"message": "not logged in"}, 409
+        return {"message": "not logged in"}, 403
     
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT * FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
@@ -95,4 +95,4 @@ def delete_review(account_id, album_id):
         else:
             return {"message": "no review found by user with id %s for album with id %s" %(account_id, album_id)}, 404 # = Not Found
     else:
-        return {"message": "insufficient permissions"}, 409 # = Forbidden
+        return {"message": "insufficient permissions"}, 403 # = Forbidden
