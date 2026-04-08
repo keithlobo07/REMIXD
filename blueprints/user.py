@@ -1,5 +1,6 @@
 from flask import *
 from app import sql, ph
+from admin import is_admin
 
 users = Blueprint('users', __name__)
 
@@ -71,3 +72,28 @@ def signup():
             return {"message": "email already exists"}, 409 # = Conflict
     else:
         return redirect(url_for('pages.home')), 303 # = See Other (redirect w/ get)
+
+@users.put("/api/user/<userid>")
+def update_user(userid):
+    if session['id'] != userid and not is_admin():
+        return {"message": "insufficient permissions"}, 4093# = Forbidden
+    
+    name, password, bio = request.form['name'], request.form['password'], request.form['bio']
+    cursor = sql.get_db().cursor()
+
+    message = ""
+
+    # i could probably do this with string formatting but i wasnt sure how to do the commas between set statements
+    if name != None:
+        cursor.execute("UPDATE Account SET Name = %s WHERE ID = %s;", (name, userid))
+        message += "name updated. "
+    if password != None:
+        cursor.execute("UPDATE Account SET Password = %s WHERE ID = %s;", (password, userid))
+        message += "password updated. "
+    if bio != None:
+        cursor.execute("UPDATE Account SET Bio = %s WHERE ID = %s;", (bio, userid))
+        message == "bio updated. "
+    
+    sql.get_db().commit()
+    return {"message": message}, 200
+
