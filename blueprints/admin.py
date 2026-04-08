@@ -60,9 +60,13 @@ def ban_user(userid):
     cursor = sql.get_db().cursor()
     cursor.execute("UPDATE Account SET modFlags = 1 WHERE ID = %s;", userid)
     sql.get_db().commit()
-
     if (cursor.rowcount == 0):
+        cursor.close()
         return {"message": "no user with id %s found" %userid}, 404 # = Not Found
-    else:
-        
-        return {"message":"user %s banned" %userid}, 200 # = Completes
+    
+    cursor.execute("DELETE FROM Review WHERE AccountID = %s", userid)
+    cursor.execute("DELETE FROM Tags WHERE AccountID = %s OR ReviewAccountID = %s", (userid, userid))
+    sql.get_db().commit()
+    cursor.close()
+    
+    return {"message":"user %s banned" %userid}, 200 # = Completes
