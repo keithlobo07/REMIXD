@@ -3,7 +3,7 @@ from app import sql
 
 albums = Blueprint('albums', __name__)
 
-@albums.route("/api/album/<albumid>")
+@albums.get("/api/album/<albumid>")
 def album_lookup(albumid):
     return jsonify({
         "idAlbum":"2130752",
@@ -41,7 +41,7 @@ def album_review_info(albumid):
     return {"numReviews":reviews, "avgScore":avg_score}
 
 
-@albums.route("/api/album/<albumid>/reviews")
+@albums.get("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
     limit = request.args.get('limit')
     limit = int(limit) if limit != None else 5

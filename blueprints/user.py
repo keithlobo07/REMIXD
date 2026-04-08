@@ -80,10 +80,18 @@ def signup():
 @users.put("/api/user/<userid>")
 def update_user(userid):
     if session['id'] != userid and not is_admin():
-        return {"message": "insufficient permissions"}, 4093# = Forbidden
+        return {"message": "insufficient permissions"}, 401 # = Unauthorized
     
     name, password, bio = request.form['name'], request.form['password'], request.form['bio']
+
+    if name == None and password == None and bio == None:
+        return {"message": "no data to update provided"}, 400 # = Bad Request
+
     cursor = sql.get_db().cursor()
+
+    cursor.execute("SELECT ID FROM Account WHERE ID = %s;", userid)
+    if cursor.rowcount == 0:
+        return {"message": "no user with id %s found." %userid}, 404 # = Not Found
 
     message = ""
 
@@ -106,12 +114,16 @@ def update_user(userid):
 @users.delete("/api/user/<userid>")
 def delete_user(userid):
     if session['id'] != userid and not is_admin():
-        return {"message": "insufficient permissions"}, 403 # = Forbidden
+        return {"message": "insufficient permissions"}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()
     cursor.execute("DELETE FROM Account WHERE ID = %s;", userid)
     if cursor.rowcount == 0:
         cursor.close()
         return {"message": "user with id %s not found" %userid}, 404 # = Not Found
+    
+    if userid == session['id']:
+        session.pop('id', None)
+
     cursor.close()
     return {"message": "user with id %s deleted" %userid}, 200 # = OK

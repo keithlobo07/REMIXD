@@ -13,6 +13,9 @@ def review_data(userid, albumid):
         data = cursor.fetchone()
         cursor.close()
 
+        if data == None:
+            return None
+
         return {
             "accountID":data[0],
             "albumID":data[1],
@@ -30,6 +33,9 @@ def review_data(userid, albumid):
         data = cursor.fetchone()
         cursor.close()
 
+        if data == None:
+            return None
+
         return {
             "accountID":data[0],
             "albumID":data[1],
@@ -43,8 +49,11 @@ def review_data(userid, albumid):
 
 @reviews.get("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
-    return jsonify(review_data(userid, albumid))
-    
+    data = review_data(userid, albumid)
+    if data == None:
+        return {"message": "review from user with id %s for album with id %s not found." %(userid, albumid)}, 404
+    return data, 200
+
 @reviews.post("/api/review")
 def post_review():
     if not 'id' in session:
@@ -89,6 +98,7 @@ def delete_review(account_id, album_id):
     
     cursor = sql.get_db().cursor()
     cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
+    cursor.execute("DELETE FROM Tags WHERE ReviewAccountID = %s AND ReivewAlbumID = %s;", (account_id, album_id))
     sql.get_db().commit()
     if cursor.rowcount > 0:
         cursor.close()
@@ -104,9 +114,13 @@ def update_review_tags(userid, albumid):
     
     tags, review_account_id, review_album_id = request.form['tags'], request.form['review_account_id'], request.form['review_album_id']
     cursor = sql.get_db().cursor()
-    cursor.execute("UPDATE Tags SET Tags = %s WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (tags, session['id'], review_account_id, review_album_id))
-    if (cursor.rowcount == 0):
-        cursor.close()
-        return {"message": "something went wrong"}, 500 # = Internal Server Error
+    cursor.execute("SELECT 1 FROM Tags WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (session['id'], review_account_id, review_album_id))
+    
+    if cursor.rowcount == 0:
+        cursor.execute("INSERT INTO Tags (AccountID, ReviewAccountID, ReviewAlbumID, info) VALUES (%s, %s, %s, %s)", (session['id'], review_account_id, review_album_id, tags))
+    else:
+        cursor.execute("UPDATE Tags SET Tags = %s WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (tags, session['id'], review_account_id, review_album_id))
+        
+    sql.get_db().commit()
     cursor.close()
     return {"message": "tags updated"}, 200 # = OK

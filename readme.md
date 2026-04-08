@@ -2,119 +2,180 @@ remixd
 ======
 A letterboxd like social media for reviewing albums.
 
-dependancies:
+Dependancies:
 -------------
 + flask
 + flask-mysql
 + pyopenssl
 + argon2-cffi
 
-hosting:
+Hosting:
 ------
-1. install python dependancies
-2. (optional) host mysql locally if aws isnt working
-    1. setup local mysql server
-    2. run sql_scripts/database_setup.sql
-    3. (optional) run sql_scripts/insert_data.sql for example data
-    4. edit lines 12 - 15 of app.py to reflect new connection
-2. run app.py
-3. access with provided host (e.g. https://127.0.0.1:5000)
+1. Install python dependancies
+2. (optional) Host mysql locally if aws isnt working (we probably ran out of credits)
+    1. Setup local mysql server
+    2. Run sql_scripts/database_setup.sql
+    3. (optional) Run sql_scripts/insert_data.sql for example data
+    4. Edit lines 12 - 15 of app.py to reflect new connection
+2. Run app.py
+3. Access with provided host (e.g. https://127.0.0.1:5000)
 
-**warning:** your web browser will probably try to stop you from accessing any pages since the ssl certificate is self-certified. most browsers include an override.
+**warning:** Your web browser will probably try to stop you from accessing any pages since the ssl certificate is self-certified. Most browsers include an override.
 
-api usage:
+API Usage:
 ----------
-<h3>lookup</h3>
+<h3>Albums</h3>
+<h4>Album information</h4>
+Format: **figure out escaping characters** <br>
+Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
+Example response:<br><br>
+Returns relevant information for a specific album given its Musicbrainz release group ID. Takes at least one second to execute since it needs to adhere to Musicbrainz's rate limits. Includes the tracklist of the release group's earliest release.
 
-<h4>album</h4>
-<p>format: **figure out escaping characters** <br>
-example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
-example response:<br><br>
-returns relevant information for a specific album given its musicbrainz release group id. takes at least one second to execute since it needs to adhere to musicbrainz's rate limits. includes the tracklist of the release group's earliest release.
-</p>
+<h4>Album reviews</h4>
+Format: <br>
+Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49/reviews?limit=3
+Example response: <br><br>
+Returns a number (default 5) of reviews for an album given its Musicbrainz id.
 
-<h4>user</h4>
-<p>format: <br>
-example request: /api/user/1<br>
-example response: <br><br>
-returns impersonal information about a user. returns their five most recent reviews. if you have an active login, the reviews will contain like and report data from your perspective.</p>
-
-<h4>review</h4>
-<p>format: <br>
-example request: /api/review/1/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
-example response:<br><br>
-returns one specific review given a user and musicbrainz release group id. if you have an active login, the review will contain like and report data from your perspective.
-</p>
+<h4>Album search</h4>
+Format: /api/albums?query=""<br>
+Example request: /api/albums?query="Illmatic"<br>
+Example response: <br><br>
+Searches the Musicbrainz database using their api and returns the release groups matching the given phrase. Includes artist and release group title.<br>
+Returns 400 if query parameter is missing.
 
 ---
 
-<h3>search</h3>
+<h3>Users</h3>
+<h4>Lookup / Get</h4>
+Format: <br>
+Required method: Get<br>
+Example request: /api/user/1<br>
+Example response: <br><br>
+Returns impersonal information about a user. Includes their five most recent reviews. If you have an active login, the reviews will contain like and report data from your perspective.
 
-<h4>album search</h4>
-<p>format: /api/albums?query=""<br>
-example request: /api/albums?query="Illmatic"<br>
-example response: <br><br>
-searches the musicbrainz database using their api and returns the release groups matching the given phrase. includes artist and release group title.<br>
-returns 400 if query parameter is missing.
-</p>
-
-<h4>album recommend</h4>
-
----
-
-<h3>admin</h3>
-
-<h4>review search</h4>
-<p>format: /api/admin/reviews<br>
-example response:<br><br>
-returns the 5 most reported reviews.
-</p>
-
-<h4>user search</h4>
-<p>format: /api/admin/users<br>
-example response:<br><br>
-returns 5 users with the highest total review reports.
-</p>
-
-<h4>statistics</h4>
-
----
-
-<h3>utilities</h3>
-<h4>sign up</h4>
-format: /api/signup **PUT method only**<br>
-required body: form containing email, username and password fields<br>
-example request: <br>
-example response: <br>
-http response codes:<br>
+<h4>Post</h4>
+Format: /api/user<br>
+Required method: Post<br>
+Required body: form containing email, username and password fields<br>
+Example request: <br>
+Example response: <br>
+HTTP response codes:<br>
 - 201 on successful account creation<br>
 - 303 to home page if already logged in<br>
 - 409 where account with given email already exists<br>
 - 500 if database cannot retrieve newly created user<br><br>
 
-creates a user account with the provided information. automatically logs in as the new user.
+Creates a user account with the provided information. Automatically logs in as the new user.
 
+<h4>Put</h4>
+Format: /api/user/\<userid\><br>
+Required method: Put<br>
+Required body: form containing at least one of 'name', 'password', or 'bio'<br>
+Example request:<br>
+Example response:<br>
+HTTP response codes:<br>
+- 200 if user was updated<br>
+- 400 if form contains none of 'name', 'password', or 'bio'<br>
+- 401 if trying to edit another user<br><br>
 
-<h4>log in / authenticate</h4>
-format: /api/authenticate **POST method only**<br>
-required body: form containing email and username<br>
-example request: <br>
-example response: <br>
-http response codes:<br>
+Updates a user account with the provided information. Admins can change any user's information. Standard users can only change their own. Returns a message detailing what fields were changed.
+
+<h4>Delete</h4>
+Format: /api/user/\<userid\><br>
+Required method: Delete<br>
+Example request:<br>
+Example response:<br>
+HTTP response codes:<br>
+- 200 on successful deletion<br>
+- 401 if trying to delete another user<br>
+- 404 if no user matching given ID is found<br><br>
+
+Removes a user account from the database. Admins may delete any user. Standard users can only delete their own account. Logs user out if deleting themselves. Returns a message expanding upon HTTP codes.
+
+---
+
+<h3>Reviews</h3>
+<h4>Lookup / Get</h4>
+Format: /api/review/\<userid\>/\<albumid\><br>
+Required method: Get
+Example request: /api/review/1/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
+Example response:<br>
+HTTP response codes:<br>
+- 404 if review could not be found<br>
+- 200 on successful lookup<br><br>
+
+Returns one specific review given a user and Musicbrainz release group id. If you have an active login, the review will contain like and report data from your perspective. If no review could be found, returns a message explaining so.
+
+<h4>Post</h4>
+Format: /api/review<br>
+
+<h4>Put</h4>
+Format:
+
+<h4>Delete</h4>
+Format: /api/review/\<userid\>/\<albumid\><br>
+Required method: Delete<br>
+Example request: <br>
+Example response: <br>
+HTTP response codes: <br>
+- 200 on successful deletion<br>
+- 404 if review could not be found<br>
+- 401 if trying to delete someone else's review<br><br>
+
+Deletes a review from the database. Admins may delete any review. Standard users can only delete their own. Deletes all records of likes and reports from the database as well.
+
+<h4>Tags</h4>
+Format: /api/review/\<userid\>/\<albumid\>/tags<br>
+Required method: Post<br>
+Example request: <br>
+Example response: <br>
+HTTP response codes: <br>
+- 400 if not logged in<br>
+- 200 on successful tag update<br><br>
+
+Updates the tag information (likes, reports) on a given review from the currently logged in user. 
+
+---
+
+<h3>Admin</h3>
+<h4>Review search</h4>
+Format: /api/admin/reviews<br>
+Example response:<br><br>
+Returns the 5 most reported reviews.
+
+<h4>User search</h4>
+Format: /api/admin/users<br>
+Example response:<br><br>
+Returns 5 users with the highest total review reports.
+
+<h4>Statistics</h4>
+
+<h4>Ban user</h4>
+
+---
+
+<h3>Utilities</h3>
+
+<h4>Log in / Authenticate</h4>
+Format: /api/authenticate **POST method only**<br>
+Required body: form containing email and username<br>
+Example request: <br>
+Example response: <br>
+HTTP response codes:<br>
 - 303 to home page on successful login <br>
 - 403 on incorrect login <br><br>
 
-logs in as the user associated with the given email and password. adds user id to Flask's built-in session data. redirects to the home page on successful log in.
+Logs in as the user associated with the given email and password. Adds user id to Flask's built-in session data. Redirects to the home page on successful log in.
 
-<h4>log out</h4>
-format: /api/logout<br>
-example response: <br>
-http response codes: <br>
+<h4>Log out</h4>
+Format: /api/logout<br>
+Example response: <br>
+HTTP response codes: <br>
 - 303 to lander page <br><br>
 
-logs out the current user if any. removes the current id from Flask's built-in session data. redirects to the lander page.
+Logs out the current user if any. Removes the current id from Flask's built-in session data. Redirects to the lander page.
 
-<h4>session</h4>
-<p>format: /api/session<br>
-returns a message with information about what user is currently logged in if any.
-</p>
+<h4>Session</h4>
+Format: /api/session<br>
+Returns a message with information about what user is currently logged in if any.
