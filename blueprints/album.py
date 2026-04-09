@@ -86,7 +86,7 @@ def album_search_data(query):
         ]
     }
 
-@albums.route("/api/albums")
+@albums.route("/api/album/search")
 def album_search():
     query = request.args.get("query")
     if query == None:
