@@ -1,6 +1,7 @@
 from flask import *
 from app import sql
 from album import album_search_data
+from admin import is_admin
 
 pages = Blueprint('pages', __name__)
 
@@ -74,10 +75,12 @@ def album_view():
   
 @pages.route("/home")
 def home():
-    albums = album_search_data()['albums']
+    albums = album_search_data(" ")['albums']
     print(albums)
     return render_template("allAlbumView.html", albums=albums)
 
 @pages.route("/admin")
 def admin_page():
+    if not is_admin():
+        return {"message":"Insufficient permissions."}, 401 # = Unauthorized
     return render_template("adminDashboard.html"), 200

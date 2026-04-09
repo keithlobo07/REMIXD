@@ -92,6 +92,8 @@ def album_search():
     if query == None:
         return {"message": "No query phrase provided."}, 400 # = Bad Request
 
+    query = " "
+
     data = album_search_data(query)
 
     if data == None:
