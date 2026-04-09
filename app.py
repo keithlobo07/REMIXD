@@ -176,7 +176,10 @@ def admin_user_search():
   
 @app.route("/user")
 def user_page():
-    return render_template("userView.html")
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
+
+    datas = [data]
+    return render_template("userView.html", datas = datas)
 
 @app.route("/albumView")
 def album_view():
@@ -185,7 +188,7 @@ def album_view():
         "avgRating": "4.23",
         "idAlbum": "2130752",
         "intYearReleased": "2012",
-        "numReviews": "46071",
+        "numReviews":    "46071",
         "strAlbum": "good kid, m.A.A.d city",
         "strArtist": "Kendrick Lamar",
         "strGenre": "Hip-Hop",
