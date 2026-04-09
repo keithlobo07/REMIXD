@@ -5,8 +5,6 @@ from urllib import response
 from flask import *
 from flaskext.mysql import MySQL
 from argon2 import PasswordHasher
-import musicbrainzngs as mb
-from sqlalchemy import null
 
 
 app = Flask(__name__)
@@ -21,36 +19,6 @@ app.config["MYSQL_DATABASE_HOST"] = "remixd.csumcw23kuop.us-east-1.rds.amazonaws
 app.config["MYSQL_DATABASE_USER"] = "admin"
 app.config["MYSQL_DATABASE_PASSWORD"] = "O75BmgKdl9ZPnacoEwwQ"
 app.config["MYSQL_DATABASE_DB"] = "remixd"
-
-trimmedData = {}
-
-def get_release(albumid):
-    #release group - d706457-8b16-4809-a61a-cdba1b281d39 - brand new eyes paramore
-    #release 11755c21-2546-4cb3-9b87-392f4f3c2fa2 - ten the story - twice
-
-    response = mb.get_release_by_id(albumid, includes=["recordings", "artists", "tags"])
-    responseData = response['release']
-
-    trackListData = responseData['medium-list'][0]['track-list']
-    trimmedTrackList = []
-    for elements in trackListData:
-        trackData = {
-            "trackNumber":elements["number"],
-            "name":elements["recording"]["title"],
-            "length":elements["recording"]["length"]
-        }
-        trimmedTrackList.append(trackData)
-
-    trimmedData = {
-        "idAlbum" : responseData['id'],
-        "albumName" : responseData["title"],
-        "artist" : responseData["artist-credit-phrase"],
-        "releaseDate" : responseData["date"],
-        "coverArt" : mb.get_image_list(albumid)['images'][00]['image'],
-        "trackList":trimmedTrackList
-    }
-
-    return trimmedData
 
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
@@ -131,32 +99,27 @@ def user_lookup(userid):
         # no login -> anonymous data
         cursor.execute("SELECT Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE Review.AccountID=%s ORDER BY Review.timestamp DESC LIMIT 5;", (userid))
         reviews = cursor.fetchall()
+        [print(x) for x in reviews]
         cursor.close()
         
         return jsonify({
             "id":user[0],
             "name":user[1],
             "bio":user[5],
-            "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "user_liked":x[6], "user_report":x[7]} for x in reviews]
+            "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5]} for x in reviews]
         })
 
 @app.route("/api/album/search")
 def album_search():
-
-    searchTerm = request.args.get('query', type=str)
-    responseData = mb.search_release_groups(searchTerm) # type: ignore
-    searchResults = []
-    for elements in responseData['release-group-list']:
-        trimmedAlbumData = {
-            "idAlbum" : elements['id'],
-            "albumName" : elements["title"],
-            "artist" : elements["artist-credit-phrase"],
-            "releaseDate" : elements["first-release-date"]
-        }
-        searchResults.append(trimmedAlbumData)
-
-    return jsonify(searchResults)
-
+    return jsonify({
+        "albums":[
+            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
+            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
+            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
+            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
+            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
+        ]
+    })
 
 @app.route("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
@@ -214,7 +177,34 @@ def admin_user_search():
     return jsonify({
         "users":[{"accountID":x[0], "name":x[1], "numReports":x[2]} for x in results]
     })
+  
+@app.route("/user")
+def user_page():
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
 
+    datas = [data]
+    return render_template("userView.html", datas = datas)
+
+@app.route("/ownUser")
+def ownUser_page():
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
+
+    datas = [data]
+    return render_template("ownUserView.html", datas = datas)
+
+
+@app.route("/albumView")
+def album_view():
+    albums = album_search_data()['albums']
+    
+    return render_template("albumView.html", albums=albums)
+  
+@app.route("/home")
+def home():
+    albums = album_search_data()['albums']
+    print(albums)
+    return render_template("allAlbumView.html", albums=albums)
+  
 @app.post("/api/authenticate")
 def authenticate():
     email = request.form['email']
@@ -286,10 +276,6 @@ def lander():
         return redirect(url_for('home')), 303
     return render_template("lander.html"), 200
 
-@app.route("/home")
-def home():
-    return render_template("allAlbumView.html"), 200
-
 @app.route("/api/session")
 def session_check():
     if 'id' in session:
@@ -302,12 +288,15 @@ def login_page():
         return redirect(url_for("home")), 303
     return render_template("login.html"), 200
 
+@app.route("/admin")
+def admin_page():
+    return render_template("adminDashboard.html"), 200
+
 @app.route("/signup")
 def signup_page():
     if 'id' in session:
         return redirect(url_for("home")), 303
     return render_template("signup.html"), 200
 
-
 if __name__ == "__main__":
-    app.run()
+    app.run(ssl_context='adhoc')

@@ -11,7 +11,7 @@ function returnSignupInfo(url) {
         fd.delete('confPassword')
 
         const request = new Request(url, {
-            method:"PUT",
+            method:"POST",
             body:fd
         });
 

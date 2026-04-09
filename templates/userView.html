@@ -1,0 +1,115 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/userView-style.css')}}">
+    <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
+    <title>REMIXD - Albumn View</title>
+</head>
+<main style="height:100%">
+    <div class="container">
+    <div class="row">
+        <div class="col-2">
+            <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
+        </div>
+        <div class="col-9">
+            <h2></h2>
+        </div>
+        <div class = "col-1">
+            <img src="{{url_for('static', filename='assets/account_circle.png')}}" alt="account image" class="img-fluid" style="max-width: 40px">
+        </div>
+    </div>
+</div>
+
+<p>
+<p>
+
+<!--Left hand col (return & image)-->
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <img src="{{url_for('static', filename='assets/arrow-left.png')}}" alt="left arrow" class="img-fluid" style="max-width:20px">
+        </div>
+        <div class="col-10">
+            <h6> RETURN TO SEARCH </h6>
+        </div>
+    </div>
+
+    <!--Right hand col (artist info)-->
+    <div class="row">
+        <div class="col" style="text-align:center">
+            <!--CHANGE TO USERNAME-->
+            <h1 id="username"></h1>
+        </div>
+    </div>
+</div>
+
+<div style="height:50px">
+</div>
+
+<!--Right hand col (reviews)-->
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <div class="row">
+                <div class="col-6">
+                    <h4>Recent Reviews</h4>
+                </div>
+                <div class = "col-6" style="text-align: right;">
+                    <!--page changer-->
+                    <p>PAGE < > 1/2</p>
+                </div>
+            </div>
+            <div class="row">
+                <!--REVIEWS GO HERE-->
+                <div class="card container-fluid" id="card">
+                    <div class="card-body">
+                        <div class = "container">
+                            <div class="row">
+                                <div class="col-5">
+                                    <!--make link to the usernames profile-->
+                                    <h5 id="username"></h5>
+                                </div>
+                                <div class="col-5 text-right">
+                                    <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" alt="stars PLACEHOLDER" style="max-width:100px;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <p id="reviewContent"></p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col" style="text-align:right;">
+                                    <!--make both buttoms, change to red once clicked-->
+                                    <img src="{{url_for('static', filename='assets/Flag.png')}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1">
+            <img src="{{url_for('static', filename='assets/Line 1.png')}}" alt="line" style="height: 500px">
+        </div>
+        <div class="col-5">
+            <div class = "row">
+                <div class = "col">
+                    <h3>Biography</h3>
+                </div>
+            </div>
+            <div class ="row">
+                <div class="col">
+                    <body> bio list blah blah blah </body>   
+                </div>       
+            </div>
+        </div>
+    </div>
+</div>
+
+</main>
+<footer>
+</footer>
+</html>
+<script src="{{url_for('static',filename='js/userView_script.js')}}"></script>

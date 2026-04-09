@@ -1,0 +1,17 @@
+#card{
+    /* item-card */
+    position: absolute;
+    width: 90%;
+    height: auto;
+    /* item card bg */
+    box-sizing: border-box;
+    position: absolute;
+    max-width: 90%;
+    height: auto;
+    /* card-bg */
+    background: #002657;
+    /* card-stroke */
+    border: 1px solid #42427C;
+    box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.15), 0px 4px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 28px;
+}

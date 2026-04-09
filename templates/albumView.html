@@ -1,22 +1,27 @@
 <HTML>
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="..\general.css">
-    <link rel="icon" href="..\..\..\assets/remixd-logo.png">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/albumView-style.css')}}">
+    <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
     <title>REMIXD - Albumn View</title>
 </head>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+
 <main>
 <!--logo/name-->
 <div class="container">
     <div class="row">
         <div class="col-2">
-            <img src="..\..\..\assets/remixd blue.png" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
+            <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
         </div>
         <div class="col-9">
             <h2></h2>
         </div>
         <div class = "col-1">
-            <img src="..\..\..\assets/account_circle.png" alt="account image" class="img-fluid" style="max-width: 40px">
+            <img src="{{url_for('static', filename='assets/account_circle.png')}}" alt="account image" class="img-fluid" style="max-width: 40px">
         </div>
 </div>
 
@@ -28,16 +33,17 @@
     <div class="row">
         <div class="col-6">
             <div class="row">
-                <div class="col-1">
-                    <img src="..\..\..\assets/arrow-left.png" alt="left arrow" class="img-fluid" style="max-width:20px">
+                <div class="col-2">
+                    <img src="{{url_for('static', filename='assets/arrow-left.png')}}" alt="left arrow" class="img-fluid" style="max-width:20px">
                 </div>
-                <div class="col-11">
+                <div class="col-10">
                     <h6> RETURN TO SEARCH </h6>
                 </div>
             </div>
             <div class = "row">
                 <div class="col">
-                    <img src="..\..\..\assets/artistPlaceholder.jpg" alt="artist image" class="img-fluid" style=" width: 90%;">
+                    <!--album image-->
+                    <img id="albumCover" alt="artist image" class="img-fluid" style=" width: 100%;">
                 </div>
             </div>
         </div>
@@ -46,27 +52,95 @@
         <div class="col-6">
             <div class="row">
                 <div class = "col">
-                    <h1>Title</h1>
+                    <p>
+                    <p>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h2>Artist</h2>
+                    <h2 id="albumTitle"> </h2>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h3>Date Released</h3>
+                    <h2 id="albumArtist"></h2>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h3>Star rating placeholder</h3>
+                    <h4 id="albumRelease"></h4>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h4>drop down placeholder</h4>
+                    <h4>Current rating: </h4>
+                    <!--
+                    <div class="starRating">
+                        <div class="starBackground">★★★★★</div>
+                        <div class="starYellow" style="width: {{ percent }}%;">★★★★★</div>
+                    </div>
+                    <span id="albumRating"></span>-->
+                </div>
+            </div>
+            <div class="row">
+                <div class = "col">
+                    <p>
+                    <p>
+                    <button type="button" class="btn" id="addRevB" data-bs-toggle="modal" data-bs-target="#addRev" style="width: 60%; height: 40%">
+                        <p>Add a review;</p>
+                    </button>
+
+
+                    <div class="modal fade" id="addRev" tabindex="-1" aria-labelledby="addRevLabel" aria-hidden="true">
+                        <div class="modal-dialog" id="addRevStyle">
+                            <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <h3>Add a Review for this album:</h3>
+                                    </div>
+                                    <div class="col-1">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <form>
+                                <div class="row">
+                                    <div class="col">
+                                        <h5>Select Stars*</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="number" id="stars" name="stars" min="0" max="5">
+                                    </div>
+                                </div>
+                                <p>
+                                <p>
+                                <div class="row">
+                                    <div class="col">
+                                        <h5>Write Review</h5>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <textarea id="albumReview" name="albumReview" rows="8" cols="50"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <p>
+                                </div>
+                                    <div class="col-5">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">SUBMIT   -></button>
+                                </div>
+                                </form>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -88,23 +162,23 @@
             </div>
             <div class ="row">
                 <div class="col">
-                    <body> track list blah blah blah </body>   
+                    <ol id="tracklist"></ol>
                 </div>       
             </div>
         </div>
         <!--LINE HERE-->
         <div class="col-1">
-            <img src="..\..\..\assets/line 1.png" alt="line" style="height: 500px">
+            <img src="{{url_for('static',filename='assets/line 1.png')}}" alt="line" style="height: 500px">
         </div>
         <!--Right hand col (reviews)-->
         <div class = "col-6">
             <div class = "row">
-                <div class = "col-10">
+                <div class = "col-6">
                     <h3>Reviews</h3>
                 </div>
-                <div class = "col-2">
+                <div class = "col-6" style="text-align: right;">
                     <!--page changer-->
-                    <h4>PAGE</h4>
+                    <p>PAGE < > 1/2</p>
                 </div>
             </div>
             <div class="row">
@@ -114,16 +188,22 @@
                         <div class = "container">
                             <div class="row">
                                 <div class="col-5">
-                                    <!--make link to the usernames profile-->
-                                    <h5>Username</h5>
+                                    <!--make link to the usernames profile-->>
+                                    <h5 id="username"></h5>
                                 </div>
                                 <div class="col-5 text-right">
-                                    <img src="..\..\..\assets/starPlaceH.png" alt="stars PLACEHOLDER" style="max-width:100px;">
+                                    <!--STARSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS-->
+                                    <img src="{{url_for('static',filename='assets/starPlaceH.png')}}" alt="stars PLACEHOLDER" style="width: clamp(25px, 8vw, 150px);">
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <body>review</body>
+                                    <div id="reviewContent" style="min-height: 100px;"></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col" style="text-align:right;">
+                                    <img src="{{url_for('static', filename='assets/flag.png')}}">
                                 </div>
                             </div>
                         </div>
@@ -138,7 +218,5 @@
 </div>
 </main>
 <footer>
-    <div>
-        <body> misc footer things (no foot fetishes here plz)</body>
-    </div>
 </footer>
+<script src="{{url_for('static',filename='js/albumView_script.js')}}"></script>
