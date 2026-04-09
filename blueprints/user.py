@@ -1,6 +1,6 @@
 from flask import *
 from app import sql, ph
-from admin import is_admin
+from blueprints.admin import is_admin
 
 users = Blueprint('users', __name__)
 

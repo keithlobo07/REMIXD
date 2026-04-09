@@ -1,7 +1,7 @@
 from flask import *
 from app import sql
-from admin import is_admin
-from user import is_banned
+from blueprints.admin import is_admin
+from blueprints.user import is_banned
 
 reviews = Blueprint('reviews', __name__)
 

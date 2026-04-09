@@ -1,7 +1,7 @@
 from flask import *
 from app import sql
-from album import album_search_data
-from admin import is_admin
+from blueprints.album import album_search_data
+from blueprints.admin import is_admin
 
 pages = Blueprint('pages', __name__)
 
@@ -75,7 +75,7 @@ def album_view():
   
 @pages.route("/home")
 def home():
-    albums = album_search_data(" ")['albums']
+    albums = album_search_data("Riot!")
     print(albums)
     return render_template("allAlbumView.html", albums=albums)
 
