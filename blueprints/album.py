@@ -33,7 +33,7 @@ def album_lookup_data(albumid):
 
 @albums.get("/api/album/<albumid>")
 def album_lookup(albumid):
-    data = album_lookup_data()
+    data = album_lookup_data(albumid)
     if data == None:
         return {"message":"Album %s could not be found." %albumid}, 404 # = Not Found
     return jsonify(data), 200 # = OK

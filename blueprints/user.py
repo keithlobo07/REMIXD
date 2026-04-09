@@ -54,6 +54,9 @@ def user_lookup(userid):
 def signup():
     if not 'id' in session:
         email, password, username = request.form['email'], request.form['password'], request.form['username']
+
+        if email == None or password == None or username == None:
+            return {"message":"Missing fields."}, 400 # = Bad Request
         
         cursor = sql.get_db().cursor()
         cursor.execute("SELECT Email FROM Account WHERE email = %s", (email))
