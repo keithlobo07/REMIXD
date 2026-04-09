@@ -35,12 +35,11 @@
         </div>
     </div>
 
-    {% for data in datas %}
     <!--Right hand col (artist info)-->
     <div class="row">
         <div class="col" style="text-align:center">
             <!--CHANGE TO USERNAME-->
-            <h1>{{ data.accountID }}'s Profile</h1>
+            <h1 id="username"></h1>
         </div>
     </div>
 </div>
@@ -69,7 +68,7 @@
                             <div class="row">
                                 <div class="col-5">
                                     <!--make link to the usernames profile-->
-                                    <h5> {{ data.accountID }} </h5>
+                                    <h5 id="username"></h5>
                                 </div>
                                 <div class="col-5 text-right">
                                     <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" alt="stars PLACEHOLDER" style="max-width:100px;">
@@ -77,13 +76,12 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <body> {{data.content}} </body>
+                                    <p id="reviewContent"></p>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col" style="text-align:right;">
                                     <!--make both buttoms, change to red once clicked-->
-                                    <img src="{{url_for('static', filename='assets/heart.png')}}">
                                     <img src="{{url_for('static', filename='assets/Flag.png')}}">
                                 </div>
                             </div>
@@ -108,10 +106,10 @@
             </div>
         </div>
     </div>
-    {% endfor %}
 </div>
 
 </main>
 <footer>
 </footer>
 </html>
+<script src="{{url_for('static',filename='js/userView_script.js')}}"></script>

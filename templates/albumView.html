@@ -11,6 +11,7 @@
 <script type="module" src="{{ url_for('static', filename='js/components/review_card.js')}}"></script>
  
 
+
 <main>
 <!--logo/name-->
 <div class="container">
@@ -44,7 +45,7 @@
             <div class = "row">
                 <div class="col">
                     <!--album image-->
-                    <img src="{{ album.albumArt }}" alt="artist image" class="img-fluid" style=" width: 100%;">
+                    <img id="albumCover" alt="artist image" class="img-fluid" style=" width: 100%;">
                 </div>
             </div>
         </div>
@@ -59,31 +60,28 @@
             </div>
             <div class="row">
                 <div class = "col">
-                    <h2> {{ album.strAlbum }} </h2>
+                    <h2 id="albumTitle"> </h2>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h2> {{ album.strArtist }} </h2>
+                    <h2 id="albumArtist"></h2>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h4> {{ album.intYearReleased }}</h4>
+                    <h4 id="albumRelease"></h4>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
                     <h4>Current rating: </h4>
-
-                    {% set rating = album.avgRating|float %}
-                    {% set percent = (rating/5) * 100 %}
-
+                    <!--
                     <div class="starRating">
                         <div class="starBackground">★★★★★</div>
                         <div class="starYellow" style="width: {{ percent }}%;">★★★★★</div>
                     </div>
-                    <span> {{ rating }} ({{ album.numReviews }})</span>
+                    <span id="albumRating"></span>-->
                 </div>
             </div>
             <div class="row">
@@ -101,20 +99,12 @@
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-10">
-                                        <h3>Add a Review for:</h3>
-                                    </div>
-                                    <div class="col-1">
-                                        <img src="{{url_for('static',filename='assets/heart.png')}}" style="width:200%">
+                                        <h3>Add a Review for this album:</h3>
                                     </div>
                                     <div class="col-1">
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true"></span>
                                         </button>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-11">
-                                        <h3> {{ album.strAlbum }}</h3>
                                     </div>
                                 </div>
                                 <form>
@@ -125,7 +115,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" style="max-width:60%">
+                                        <input type="number" id="stars" name="stars" min="0" max="5">
                                     </div>
                                 </div>
                                 <p>
@@ -174,11 +164,7 @@
             </div>
             <div class ="row">
                 <div class="col">
-                    <ol>
-                    {% for track in album.tracklist %}
-                        <li>{{ track }}</li>
-                    {% endfor %}
-                    </ol>
+                    <ol id="tracklist"></ol>
                 </div>       
             </div>
         </div>
