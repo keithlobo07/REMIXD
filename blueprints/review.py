@@ -19,7 +19,7 @@ def review_data(userid, albumid):
         return {
             "accountID":data[0],
             "albumID":data[1],
-            "author":data[9],
+            "name":data[9],
             "timestamp":data[2],
             "score":data[3],
             "liked":data[4],
@@ -39,7 +39,7 @@ def review_data(userid, albumid):
         return {
             "accountID":data[0],
             "albumID":data[1],
-            "author":data[7],
+            "name":data[7],
             "timestamp":data[2],
             "score":data[3],
             "liked":data[4],

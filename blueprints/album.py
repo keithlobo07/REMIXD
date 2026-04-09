@@ -5,7 +5,7 @@ albums = Blueprint('albums', __name__)
 
 def album_lookup_data(albumid):
     return {
-        "idAlbum":"2130752",
+        "idAlbum":"11755c21-2546-4cb3-9b87-392f4f3c2fa2",
         "strAlbum":"good kid, m.A.A.d city",
         "strArtist":"Kendrick Lamar",
         "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
