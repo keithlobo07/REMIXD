@@ -10,10 +10,6 @@ def lander():
         return redirect(url_for('pages.home')), 303 # = See Other (redirect w/ get)
     return render_template("lander.html"), 200 # = OK
 
-@pages.route("/home")
-def home():
-    return render_template("allAlbumView.html"), 200 # = OK
-
 @pages.route("/login")
 def login_page():
     if 'id' in session:
