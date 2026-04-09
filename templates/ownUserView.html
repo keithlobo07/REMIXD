@@ -2,10 +2,15 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/userView-style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/ownUserView-style.css')}}">
     <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
     <title>REMIXD - Albumn View</title>
 </head>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <main style="height:100%">
     <div class="container">
     <div class="row">
@@ -33,6 +38,43 @@
         <div class="col-10">
             <h6> RETURN TO SEARCH </h6>
         </div>
+    </div>
+
+    <div class="row">
+        <div class="col-10">
+        </div>
+        <div class="col-1">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn" data-toggle="modal" data-target="#editProfile" style="width: 150px">
+                <h5>EDIT PROFILE</h5>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog" id="editProfileStyle">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editLabel">Edit Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">X</span>
+            </button>
+        </div>
+        <form>
+        <div class="modal-body">
+            <h3>Edit Username:</h3><br>
+            <input type="text" id="username" name="username">
+            <br>
+            <h3>Edit Biography:</h3><br>
+            <textarea id="biography" name="biography" rows="5" cols="50"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" value="Submit">Submit</button>
+        </div>
+        </form>
+        </div>
+    </div>
     </div>
 
     {% for data in datas %}

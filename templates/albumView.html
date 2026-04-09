@@ -8,6 +8,7 @@
 </head>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
 <main>
 <!--logo/name-->
 <div class="container">
@@ -38,10 +39,11 @@
                     <h6> RETURN TO SEARCH </h6>
                 </div>
             </div>
+            {% for album in albums %}
             <div class = "row">
                 <div class="col">
-                    <!--artist image-->
-                    <img src="{{url_for('static',filename='assets/artistPlaceholder.jpg')}}" alt="artist image" class="img-fluid" style=" width: 100%;">
+                    <!--album image-->
+                    <img src="{{ album.albumArt }}" alt="artist image" class="img-fluid" style=" width: 100%;">
                 </div>
             </div>
         </div>
@@ -56,23 +58,31 @@
             </div>
             <div class="row">
                 <div class = "col">
-                    <h2>Title</h2>
+                    <h2> {{ album.strAlbum }} </h2>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h2>Artist</h2>
+                    <h2> {{ album.strArtist }} </h2>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h4>Date Released</h4>
+                    <h4> {{ album.intYearReleased }}</h4>
                 </div>
             </div>
             <div class="row">
                 <div class = "col">
-                    <h4>Star rating placeholder</h4>
-                    <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" style="max-width:100%">
+                    <h4>Current rating: </h4>
+
+                    {% set rating = album.avgRating|float %}
+                    {% set percent = (rating/5) * 100 %}
+
+                    <div class="starRating">
+                        <div class="starBackground">★★★★★</div>
+                        <div class="starYellow" style="width: {{ percent }}%;">★★★★★</div>
+                    </div>
+                    <span> {{ rating }} ({{ album.numReviews }})</span>
                 </div>
             </div>
             <div class="row">
@@ -80,7 +90,7 @@
                     <p>
                     <p>
                     <button type="button" class="btn" id="addRevB" data-bs-toggle="modal" data-bs-target="#addRev" style="width: 60%; height: 40%">
-                        <p>Add a review;<p>
+                        <p>Add a review;</p>
                     </button>
 
 
@@ -103,7 +113,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-11">
-                                        <h3>Title</h3>
+                                        <h3> {{ album.strAlbum }}</h3>
                                     </div>
                                 </div>
                                 <form>
@@ -163,21 +173,14 @@
             </div>
             <div class ="row">
                 <div class="col">
-                    <body> 
-                        <ol>
-                        <li>The Art of Loving (Intro)</li>
-                        <li>Nice To Each Other</li>
-                        <li>Lady Lady</li>
-                        <li>Close Up</li>
-                        <li>So Easy (To Fall In Love)</li>
-                        <li>Let Alone The One You Love</li>
-                        <li>Man I Need</li>
-                        <li>Something Inbetween</li>
-                        <li>Loud</li>
-                        </ol>
-                    </body>   
+                    <ol>
+                    {% for track in album.tracklist %}
+                        <li>{{ track }}</li>
+                    {% endfor %}
+                    </ol>
                 </div>       
             </div>
+            {% endfor %}
         </div>
         <!--LINE HERE-->
         <div class="col-1">
@@ -196,13 +199,15 @@
             </div>
             <div class="row">
                 <!--REVIEWS GO HERE - ADD CARD-->
+                {% for data in datas %}
                 <div class="card container-fluid" id="card">
                     <div class="card-body">
                         <div class = "container">
                             <div class="row">
                                 <div class="col-5">
                                     <!--make link to the usernames profile-->
-                                    <h5>Username</h5>
+                                    <!--CHANGE TO USERNAME!!-->
+                                    <h5> {{ data.accountID }} </h5>
                                 </div>
                                 <div class="col-5 text-right">
                                     <img src="{{url_for('static',filename='assets/starPlaceH.png')}}" alt="stars PLACEHOLDER" style="width: clamp(25px, 8vw, 150px);">
@@ -210,7 +215,7 @@
                             </div>
                             <div class="row">
                                 <div class="col">
-                                    <body>review</body>
+                                    <body> {{ data.content }} </body>
                                 </div>
                             </div>
                             <div class="row">
@@ -222,6 +227,7 @@
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -231,7 +237,4 @@
 </div>
 </main>
 <footer>
-    <div>
-        <body> misc footer things (no foot fetishes here plz)</body>
-    </div>
 </footer>
