@@ -6,7 +6,6 @@
     <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
     <title>REMIXD - Albumn View</title>
 </head>
-<script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
 
 <main style="height:100%; width: 100%">
 <div class="container-fluid">
@@ -81,41 +80,32 @@
                 <div class="row" style="height: auto">
                     <div class="col d-flex flex-column">
                         <!--CARD NOTE FROM ALBUM VIEW-->
-                        {% for album in albums %}
                             <div class="card" id="card">
                                 <div class="card-body">
                                     <div class = "container">
                                         <div class="row">
                                             <div class="col-3">
-                                                <img src="{{ album.albumArt }}" style="width: clamp(100px, 13vw, 200px); padding :5px;">
+                                                <img id="albumCover" alt="album cover" style="width: clamp(100px, 13vw, 200px); padding :5px;">
                                             </div>
                                             <div class="col-9" style="padding-left: 5%;">
                                                 <!--make link to the album-->
                                                 <div class="row">
                                                     <div class="col-5">
-                                                        <h5>{{ album.strAlbum }}</h5>
+                                                        <h5 id="albumTitle"></h5>
                                                     </div>
                                                     <div class="col-7 text-right">
-                                                        {% set rating = album.avgRating|float %}
-                                                        {% set percent = (rating/5) * 100 %}
-
-                                                        <div class="starRating">
-                                                            <div class="starBackground">★★★★★</div>
-                                                            <div class="starYellow" style="width: {{ percent }}%;">★★★★★</div>
-                                                        </div>
-                                                        <span> {{ rating }} ({{ album.numReviews }})</span>
-                                                    
+                                                        <div class="starYellow" id="filledStars">★★★★★</div>
+                                                        <span id="albumRating"></span>           
                                                     </div>
                                                 </div>
-                                                <p>{{ album.strArtist }}</p>
+                                                <p id="albumArtist"></p>
                                                 <p>
-                                                <p>{{ album.intYearReleased }}</p>
+                                                <p id="albumRelease"></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        {% endfor %}
                    </div>
                 </div>
             </div>
@@ -124,5 +114,5 @@
 </div>
 </main>
 <footer>
-    <body> foot feet feety foot </body>
 </footer>
+<script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>

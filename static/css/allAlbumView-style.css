@@ -85,21 +85,11 @@ input, select{
     padding: 0;
 }
 
-.starBackground{
-    color: #0F2C52;
-}
-
-.starRating{
-    position: relative;
-    display: inline-block;
+.col-7.text-right .stars{
     font-size: 24px;
-}
-
-.starYellow{
-    color: #F9E784;
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    overflow: hidden;
+    font-weight: bold;
+    background-clip: text !important;
+    -webkit-background-clip: text !important;
+    color: transparent !important;
+    background: linear-gradient(90deg, #F9E784 0%, #F9E784 0%, #ccc 0%);
 }
