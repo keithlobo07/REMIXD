@@ -16,12 +16,12 @@
     border-radius: 28px;
 }
 
-#addRevB{
+#editLabel{
     color: #EFE9FF;
     text-align: left;
 }
 
-#addRevStyle{
+#editProfileStyle{
     height: 70%;
     width: 70%;
     position: center;
@@ -32,23 +32,4 @@
 
 .modal-content{
     background-color: #0F2C52;
-}
-
-.starBackground{
-    color: #0F2C52;
-}
-
-.starRating{
-    position: relative;
-    display: inline-block;
-    font-size: 24px;
-}
-
-.starYellow{
-    color: #F9E784;
-    position: absolute;
-    top: 0;
-    left: 0;
-    white-space: nowrap;
-    overflow: hidden;
 }

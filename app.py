@@ -120,23 +120,6 @@ def album_search_data():
 @app.route("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
-    data = cursor.fetchone()
-    cursor.close()
-
-    return jsonify({
-        "accountID":data[0],
-        "albumID":data[1],
-        "timestamp":data[2],
-        "score":data[3],
-        "liked":data[4],
-        "content":data[5],
-        "numLikes":data[6]
-    })
-
-@app.route("/api/review/<userid>/<albumid>")
-def review_lookup(userid, albumid):
-    cursor = sql.get_db().cursor()
 
     if 'id' in session:
         cursor.execute("SELECT Review.AccountID, Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, IFNULL(Tags.info & 128 = 128, 0) as user_like, IFNULL(Tags.info & 64 = 64, 0) as user_report FROM Review LEFT JOIN Tags ON Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.AccountID = %s WHERE Review.AccountID=%s AND AlbumID=%s;", (session['id'], userid, albumid))
@@ -193,11 +176,52 @@ def admin_user_search():
   
 @app.route("/user")
 def user_page():
-    return render_template("userView.html")
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
+
+    datas = [data]
+    return render_template("userView.html", datas = datas)
+
+@app.route("/ownUser")
+def ownUser_page():
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
+
+    datas = [data]
+    return render_template("ownUserView.html", datas = datas)
+
 
 @app.route("/albumView")
 def album_view():
-    return render_template("albumView.html")
+    album = {
+        "albumArt": "https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
+        "avgRating": "4.23",
+        "idAlbum": "2130752",
+        "intYearReleased": "2012",
+        "numReviews":    "46071",
+        "strAlbum": "good kid, m.A.A.d city",
+        "strArtist": "Kendrick Lamar",
+        "strGenre": "Hip-Hop",
+        "tracklist": [
+        "Sherane a.k.a. Master Splinter's Daughter",
+        "Bitch, Don't Kill My Vibe",
+        "Backseat Freestyle",
+        "The Art of Peer Pressure",
+        "Money Trees",
+        "Poetic Justice",
+        "good kid",
+        "m.A.A.d city",
+        "Swimming Pools (Drank) (extended version)",
+        "Sing About Me, I'm Dying of Thirst",
+        "Real",
+        "Compton",
+        "The Recipe",
+        "Black Boy Fly",
+        "Now or Never"
+        ]}
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
+
+    albums = [album]
+    datas = [data]
+    return render_template("albumView.html", albums = albums, datas = datas)
   
 @app.route("/home")
 def home():
@@ -291,6 +315,7 @@ def login_page():
 @app.route("/admin")
 def admin_page():
     return render_template("adminDashboard.html"), 200
+
 @app.route("/signup")
 def signup_page():
     if 'id' in session:
