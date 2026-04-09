@@ -181,6 +181,14 @@ def user_page():
     datas = [data]
     return render_template("userView.html", datas = datas)
 
+@app.route("/ownUser")
+def ownUser_page():
+    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
+
+    datas = [data]
+    return render_template("ownUserView.html", datas = datas)
+
+
 @app.route("/albumView")
 def album_view():
     album = {

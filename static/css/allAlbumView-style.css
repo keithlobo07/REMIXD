@@ -1,3 +1,8 @@
+input, select{
+    background-color:#0F3D77;
+    color:#EFE9FF;
+}
+
 .dropbtn{
     background: url(../assets/account_circle.png);
     background-size: 40px;
@@ -34,11 +39,11 @@
 
 #card{
     /* item-card */
-    width: 90%;
+    width: 100%;
     height: auto;
     /* item card bg */
     box-sizing: border-box;
-    max-width: 90%;
+    max-width: 100%;
     height: auto;
     /* card-bg */
     background: #002657;
@@ -78,4 +83,23 @@
     border: none;
     background: none;
     padding: 0;
+}
+
+.starBackground{
+    color: #0F2C52;
+}
+
+.starRating{
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+}
+
+.starYellow{
+    color: #F9E784;
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
