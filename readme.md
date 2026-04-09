@@ -38,7 +38,7 @@ Example response: <br><br>
 Returns a number (default 5) of reviews for an album given its Musicbrainz id.
 
 <h4>Album search</h4>
-Format: /api/albums?query="\<queryphrase\>"<br>
+Format: /api/album/search?query="\<queryphrase\>"<br>
 Example request: /api/albums?query="Illmatic"<br>
 Example response: <br><br>
 Searches the Musicbrainz database using their api and returns the release groups matching the given phrase. Includes artist and release group title.<br>
