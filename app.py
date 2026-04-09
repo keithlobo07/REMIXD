@@ -120,23 +120,6 @@ def album_search_data():
 @app.route("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
-    data = cursor.fetchone()
-    cursor.close()
-
-    return jsonify({
-        "accountID":data[0],
-        "albumID":data[1],
-        "timestamp":data[2],
-        "score":data[3],
-        "liked":data[4],
-        "content":data[5],
-        "numLikes":data[6]
-    })
-
-@app.route("/api/review/<userid>/<albumid>")
-def review_lookup(userid, albumid):
-    cursor = sql.get_db().cursor()
 
     if 'id' in session:
         cursor.execute("SELECT Review.AccountID, Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, IFNULL(Tags.info & 128 = 128, 0) as user_like, IFNULL(Tags.info & 64 = 64, 0) as user_report FROM Review LEFT JOIN Tags ON Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.AccountID = %s WHERE Review.AccountID=%s AND AlbumID=%s;", (session['id'], userid, albumid))
