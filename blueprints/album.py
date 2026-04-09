@@ -3,9 +3,8 @@ from app import sql
 
 albums = Blueprint('albums', __name__)
 
-@albums.get("/api/album/<albumid>")
-def album_lookup(albumid):
-    return jsonify({
+def album_lookup_data(albumid):
+    return {
         "idAlbum":"2130752",
         "strAlbum":"good kid, m.A.A.d city",
         "strArtist":"Kendrick Lamar",
@@ -30,7 +29,14 @@ def album_lookup(albumid):
             "The Recipe",
             "Black Boy Fly",
             "Now or Never"
-        ]})
+        ]}
+
+@albums.get("/api/album/<albumid>")
+def album_lookup(albumid):
+    data = album_lookup_data()
+    if data == None:
+        return {"message":"Album %s could not be found." %albumid}, 404 # = Not Found
+    return jsonify(data), 200 # = OK
 
 def album_review_info(albumid):
     cursor = sql.get_db().cursor()
@@ -69,13 +75,8 @@ def albums_reviews(albumid):
             "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6]} for x in results]
         })
 
-@albums.route("/api/albums")
-def album_search():
-    query = request.args.get("query")
-    if query == None:
-        return {"message": "No query phrase provided."}, 400 # = Bad Request
-
-    return jsonify({
+def album_search_data(query):
+    return {
         "albums":[
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
@@ -83,4 +84,16 @@ def album_search():
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
         ]
-    })
+    }
+
+@albums.route("/api/albums")
+def album_search():
+    query = request.args.get("query")
+    if query == None:
+        return {"message": "No query phrase provided."}, 400 # = Bad Request
+
+    data = album_search_data(query)
+
+    if data == None:
+        return {"message":"Album search returned no data."}, 404 # = Not Found
+    return jsonify(data), 200
