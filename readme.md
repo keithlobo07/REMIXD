@@ -26,19 +26,19 @@ API Usage:
 ----------
 <h3>Albums</h3>
 <h4>Album information</h4>
-Format: **figure out escaping characters** <br>
+Format: /api/album/\<albumid\> <br>
 Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
 Example response:<br><br>
 Returns relevant information for a specific album given its Musicbrainz release group ID. Takes at least one second to execute since it needs to adhere to Musicbrainz's rate limits. Includes the tracklist of the release group's earliest release.
 
 <h4>Album reviews</h4>
-Format: <br>
+Format: /api/album/\<albumid\>/reviews<br>
 Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49/reviews?limit=3
 Example response: <br><br>
 Returns a number (default 5) of reviews for an album given its Musicbrainz id.
 
 <h4>Album search</h4>
-Format: /api/albums?query=""<br>
+Format: /api/albums?query="\<queryphrase\>"<br>
 Example request: /api/albums?query="Illmatic"<br>
 Example response: <br><br>
 Searches the Musicbrainz database using their api and returns the release groups matching the given phrase. Includes artist and release group title.<br>
@@ -48,7 +48,7 @@ Returns 400 if query parameter is missing.
 
 <h3>Users</h3>
 <h4>Lookup / Get</h4>
-Format: <br>
+Format: /api/user/\<userid\><br>
 Required method: Get<br>
 Example request: /api/user/1<br>
 Example response: <br><br>
@@ -150,8 +150,19 @@ Example response:<br><br>
 Returns 5 users with the highest total review reports.
 
 <h4>Statistics</h4>
+Format: /api/admin/statistics<br>
+Example response:<br><br>
+Returns the number of posts made each month for the past 12 months.
 
 <h4>Ban user</h4>
+Format: /api/admin/ban/\<userid\>
+Example request: /api/admin/ban/1<br>
+Example response: {"message":"User 1 banned."}, 200<br>
+HTTP response codes:<br>
+- 200 on successful ban<br>
+- 404 if no user with given id found<br><br>
+
+Disables a user's ability to post and edit reviews. Deletes all current reviews and tags on posts. Account stays within database so email cannot be reused.
 
 ---
 
