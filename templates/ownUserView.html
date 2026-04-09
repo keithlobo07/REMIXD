@@ -1,0 +1,159 @@
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/ownUserView-style.css')}}">
+    <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
+    <title>REMIXD - Albumn View</title>
+</head>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<main style="height:100%">
+    <div class="container">
+    <div class="row">
+        <div class="col-2">
+            <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
+        </div>
+        <div class="col-9">
+            <h2></h2>
+        </div>
+        <div class = "col-1">
+            <img src="{{url_for('static', filename='assets/account_circle.png')}}" alt="account image" class="img-fluid" style="max-width: 40px">
+        </div>
+    </div>
+</div>
+
+<p>
+<p>
+
+<!--Left hand col (return & image)-->
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <img src="{{url_for('static', filename='assets/arrow-left.png')}}" alt="left arrow" class="img-fluid" style="max-width:20px">
+        </div>
+        <div class="col-10">
+            <h6> RETURN TO SEARCH </h6>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-10">
+        </div>
+        <div class="col-1">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn" data-toggle="modal" data-target="#editProfile" style="width: 150px">
+                <h5>EDIT PROFILE</h5>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog" id="editProfileStyle">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editLabel">Edit Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">X</span>
+            </button>
+        </div>
+        <form>
+        <div class="modal-body">
+            <h3>Edit Username:</h3><br>
+            <input type="text" id="username" name="username">
+            <br>
+            <h3>Edit Biography:</h3><br>
+            <textarea id="biography" name="biography" rows="5" cols="50"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" value="Submit">Submit</button>
+        </div>
+        </form>
+        </div>
+    </div>
+    </div>
+
+    {% for data in datas %}
+    <!--Right hand col (artist info)-->
+    <div class="row">
+        <div class="col" style="text-align:center">
+            <!--CHANGE TO USERNAME-->
+            <h1>{{ data.accountID }}'s Profile</h1>
+        </div>
+    </div>
+</div>
+
+<div style="height:50px">
+</div>
+
+<!--Right hand col (reviews)-->
+<div class="container">
+    <div class="row">
+        <div class="col-5">
+            <div class="row">
+                <div class="col-6">
+                    <h4>Recent Reviews</h4>
+                </div>
+                <div class = "col-6" style="text-align: right;">
+                    <!--page changer-->
+                    <p>PAGE < > 1/2</p>
+                </div>
+            </div>
+            <div class="row">
+                <!--REVIEWS GO HERE-->
+                <div class="card container-fluid" id="card">
+                    <div class="card-body">
+                        <div class = "container">
+                            <div class="row">
+                                <div class="col-5">
+                                    <!--make link to the usernames profile-->
+                                    <h5> {{ data.accountID }} </h5>
+                                </div>
+                                <div class="col-5 text-right">
+                                    <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" alt="stars PLACEHOLDER" style="max-width:100px;">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <body> {{data.content}} </body>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col" style="text-align:right;">
+                                    <!--make both buttoms, change to red once clicked-->
+                                    <img src="{{url_for('static', filename='assets/heart.png')}}">
+                                    <img src="{{url_for('static', filename='assets/Flag.png')}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-1">
+            <img src="{{url_for('static', filename='assets/Line 1.png')}}" alt="line" style="height: 500px">
+        </div>
+        <div class="col-5">
+            <div class = "row">
+                <div class = "col">
+                    <h3>Biography</h3>
+                </div>
+            </div>
+            <div class ="row">
+                <div class="col">
+                    <body> bio list blah blah blah </body>   
+                </div>       
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+</main>
+<footer>
+</footer>
+</html>
