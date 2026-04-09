@@ -1,14 +1,17 @@
+from platform import release
+from turtle import title
+from urllib import response
+
 from flask import *
 from flaskext.mysql import MySQL
 from argon2 import PasswordHasher
-import sys
-
-sys.path.insert(0, "./blueprints")
 
 
 app = Flask(__name__)
 sql = MySQL(app)
 ph = PasswordHasher()
+mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
+mb.set_rate_limit(1)
 
 app.secret_key = "cf39da25450430eb49098ec3f99b19cb4977a00355dbfd822a46626c262e1179"
 
@@ -17,35 +20,35 @@ app.config["MYSQL_DATABASE_USER"] = "admin"
 app.config["MYSQL_DATABASE_PASSWORD"] = "O75BmgKdl9ZPnacoEwwQ"
 app.config["MYSQL_DATABASE_DB"] = "remixd"
 
-<<<<<<< HEAD
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
-    return jsonify({
-        "idAlbum":"2130752",
-        "strAlbum":"good kid, m.A.A.d city",
-        "strArtist":"Kendrick Lamar",
-        "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
-        "intYearReleased":"2012",
-        "strGenre":"Hip-Hop",
-        "avgRating":"4.23",
-        "numReviews":"46071",
-        "tracklist":[
-            "Sherane a.k.a. Master Splinter's Daughter",
-            "Bitch, Don't Kill My Vibe",
-            "Backseat Freestyle",
-            "The Art of Peer Pressure",
-            "Money Trees",
-            "Poetic Justice",
-            "good kid",
-            "m.A.A.d city",
-            "Swimming Pools (Drank) (extended version)",
-            "Sing About Me, I'm Dying of Thirst",
-            "Real",
-            "Compton",
-            "The Recipe",
-            "Black Boy Fly",
-            "Now or Never"
-        ]})
+    return jsonify(get_release(albumid))
+    # return jsonify({
+    #     "idAlbum":"2130752",
+    #     "strAlbum":"good kid, m.A.A.d city",
+    #     "strArtist":"Kendrick Lamartitle",
+    #     "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
+    #     "intYearReleased":"2012",
+    #     "strGenre":"Hip-Hop",
+    #     "avgRating":"4.23",
+    #     "numReviews":"46071",
+    #     "tracklist":[         
+    #         "Sherane a.k.a. Master Splinter's Daughter",
+    #         "Bitch, Don't Kill My Vibe",
+    #         "Backseat Freestyle",
+    #         "The Art of Peer Pressure",
+    #         "Money Trees",
+    #         "Poetic Justice",
+    #         "good kid",
+    #         "m.A.A.d city",
+    #         "Swimming Pools (Drank) (extended version)",
+    #         "Sing About Me, I'm Dying of Thirst",
+    #         "Real",
+    #         "Compton",
+    #         "The Recipe",
+    #         "Black Boy Fly",
+    #         "Now or Never"
+    #     ]})
 
 @app.route("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
@@ -106,12 +109,9 @@ def user_lookup(userid):
             "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5]} for x in reviews]
         })
 
-@app.route("/api/albums")
+@app.route("/api/album/search")
 def album_search():
-    return jsonify(album_search_data())
-
-def album_search_data():
-    return {
+    return jsonify({
         "albums":[
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
@@ -119,8 +119,7 @@ def album_search_data():
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
             {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
         ]
-    }
-
+    })
 
 @app.route("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
@@ -300,18 +299,4 @@ def signup_page():
     return render_template("signup.html"), 200
 
 if __name__ == "__main__":
-    from blueprints.user import users
-    from blueprints.album import albums
-    from blueprints.review import reviews
-    from blueprints.admin import admins
-    from blueprints.util import utils
-    from blueprints.page import pages
-
-    app.register_blueprint(users)
-    app.register_blueprint(albums)
-    app.register_blueprint(reviews)
-    app.register_blueprint(admins)
-    app.register_blueprint(utils)
-    app.register_blueprint(pages)
-
     app.run(ssl_context='adhoc')

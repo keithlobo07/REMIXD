@@ -8,6 +8,7 @@ Dependancies:
 + flask-mysql
 + pyopenssl
 + argon2-cffi
++ musicbrainzngs
 
 Hosting:
 ------
