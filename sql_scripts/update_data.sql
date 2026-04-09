@@ -1,0 +1,1 @@
+UPDATE Account SET isAdmin=True WHERE ID=1;
