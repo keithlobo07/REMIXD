@@ -1,11 +1,19 @@
+from platform import release
+from turtle import title
+from urllib import response
+
 from flask import *
 from flaskext.mysql import MySQL
 from argon2 import PasswordHasher
+import musicbrainzngs as mb
+from sqlalchemy import null
 
 
 app = Flask(__name__)
 sql = MySQL(app)
 ph = PasswordHasher()
+mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
+mb.set_rate_limit(1)
 
 app.secret_key = "cf39da25450430eb49098ec3f99b19cb4977a00355dbfd822a46626c262e1179"
 
@@ -14,34 +22,65 @@ app.config["MYSQL_DATABASE_USER"] = "admin"
 app.config["MYSQL_DATABASE_PASSWORD"] = "O75BmgKdl9ZPnacoEwwQ"
 app.config["MYSQL_DATABASE_DB"] = "remixd"
 
+trimmedData = {}
+
+def get_release(albumid):
+    #release group - d706457-8b16-4809-a61a-cdba1b281d39 - brand new eyes paramore
+    #release 11755c21-2546-4cb3-9b87-392f4f3c2fa2 - ten the story - twice
+
+    response = mb.get_release_by_id(albumid, includes=["recordings", "artists", "tags"])
+    responseData = response['release']
+
+    trackListData = responseData['medium-list'][0]['track-list']
+    trimmedTrackList = []
+    for elements in trackListData:
+        trackData = {
+            "trackNumber":elements["number"],
+            "name":elements["recording"]["title"],
+            "length":elements["recording"]["length"]
+        }
+        trimmedTrackList.append(trackData)
+
+    trimmedData = {
+        "idAlbum" : responseData['id'],
+        "albumName" : responseData["title"],
+        "artist" : responseData["artist-credit-phrase"],
+        "releaseDate" : responseData["date"],
+        "coverArt" : mb.get_image_list(albumid)['images'][00]['image'],
+        "trackList":trimmedTrackList
+    }
+
+    return trimmedData
+
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
-    return jsonify({
-        "idAlbum":"2130752",
-        "strAlbum":"good kid, m.A.A.d city",
-        "strArtist":"Kendrick Lamar",
-        "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
-        "intYearReleased":"2012",
-        "strGenre":"Hip-Hop",
-        "avgRating":"4.23",
-        "numReviews":"46071",
-        "tracklist":[
-            "Sherane a.k.a. Master Splinter's Daughter",
-            "Bitch, Don't Kill My Vibe",
-            "Backseat Freestyle",
-            "The Art of Peer Pressure",
-            "Money Trees",
-            "Poetic Justice",
-            "good kid",
-            "m.A.A.d city",
-            "Swimming Pools (Drank) (extended version)",
-            "Sing About Me, I'm Dying of Thirst",
-            "Real",
-            "Compton",
-            "The Recipe",
-            "Black Boy Fly",
-            "Now or Never"
-        ]})
+    return jsonify(get_release(albumid))
+    # return jsonify({
+    #     "idAlbum":"2130752",
+    #     "strAlbum":"good kid, m.A.A.d city",
+    #     "strArtist":"Kendrick Lamartitle",
+    #     "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
+    #     "intYearReleased":"2012",
+    #     "strGenre":"Hip-Hop",
+    #     "avgRating":"4.23",
+    #     "numReviews":"46071",
+    #     "tracklist":[         
+    #         "Sherane a.k.a. Master Splinter's Daughter",
+    #         "Bitch, Don't Kill My Vibe",
+    #         "Backseat Freestyle",
+    #         "The Art of Peer Pressure",
+    #         "Money Trees",
+    #         "Poetic Justice",
+    #         "good kid",
+    #         "m.A.A.d city",
+    #         "Swimming Pools (Drank) (extended version)",
+    #         "Sing About Me, I'm Dying of Thirst",
+    #         "Real",
+    #         "Compton",
+    #         "The Recipe",
+    #         "Black Boy Fly",
+    #         "Now or Never"
+    #     ]})
 
 @app.route("/api/album/<albumid>/reviews")
 def albums_reviews(albumid):
@@ -101,17 +140,23 @@ def user_lookup(userid):
             "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "user_liked":x[6], "user_report":x[7]} for x in reviews]
         })
 
-@app.route("/api/albums")
+@app.route("/api/album/search")
 def album_search():
-    return jsonify({
-        "albums":[
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
-        ]
-    })
+
+    searchTerm = request.args.get('query', type=str)
+    responseData = mb.search_release_groups(searchTerm) # type: ignore
+    searchResults = []
+    for elements in responseData['release-group-list']:
+        trimmedAlbumData = {
+            "idAlbum" : elements['id'],
+            "albumName" : elements["title"],
+            "artist" : elements["artist-credit-phrase"],
+            "releaseDate" : elements["first-release-date"],
+        }
+        searchResults.append(trimmedAlbumData)
+
+    return searchResults
+
 
 @app.route("/api/review/<userid>/<albumid>")
 def review_lookup(userid, albumid):
@@ -265,4 +310,4 @@ def signup_page():
 
 
 if __name__ == "__main__":
-    app.run(ssl_context='adhoc')
+    app.run()
