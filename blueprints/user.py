@@ -63,9 +63,9 @@ def signup():
             r = cursor.fetchone()
             
             if r == None:
-                # some messed up database connection error would have to happen to get here but ill account for it
+                # some messed up database connection error would have to happen to get here but i'll account for it
                 cursor.close()
-                return {"message", "error occured when retreiving id from database"}, 500 # = Internal Server Error
+                return {"message", "Error occured when retreiving new user from database."}, 500 # = Internal Server Error
             
             session['id'] = r[0]
             cursor.close()
@@ -73,38 +73,38 @@ def signup():
         else:
             # user with this email already exists
             cursor.close()
-            return {"message": "email already exists"}, 409 # = Conflict
+            return {"message": "Email already exists."}, 409 # = Conflict
     else:
         return redirect(url_for('pages.home')), 303 # = See Other (redirect w/ get)
 
 @users.put("/api/user/<userid>")
 def update_user(userid):
     if session['id'] != userid and not is_admin():
-        return {"message": "insufficient permissions"}, 401 # = Unauthorized
+        return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     name, password, bio = request.form['name'], request.form['password'], request.form['bio']
 
     if name == None and password == None and bio == None:
-        return {"message": "no data to update provided"}, 400 # = Bad Request
+        return {"message": "No data found in form."}, 400 # = Bad Request
 
     cursor = sql.get_db().cursor()
 
     cursor.execute("SELECT ID FROM Account WHERE ID = %s;", userid)
     if cursor.rowcount == 0:
-        return {"message": "no user with id %s found." %userid}, 404 # = Not Found
+        return {"message": "No user with ID %s found." %userid}, 404 # = Not Found
 
     message = ""
 
     # i could probably do this with string formatting but i wasnt sure how to do the commas between set statements
     if name != None:
         cursor.execute("UPDATE Account SET Name = %s WHERE ID = %s;", (name, userid))
-        message += "name updated. "
+        message += "Name updated. "
     if password != None:
         cursor.execute("UPDATE Account SET Password = %s WHERE ID = %s;", (password, userid))
-        message += "password updated. "
+        message += "Password updated. "
     if bio != None:
         cursor.execute("UPDATE Account SET Bio = %s WHERE ID = %s;", (bio, userid))
-        message == "bio updated. "
+        message == "Bio updated. "
     
     sql.get_db().commit()
     cursor.close()
@@ -114,16 +114,16 @@ def update_user(userid):
 @users.delete("/api/user/<userid>")
 def delete_user(userid):
     if session['id'] != userid and not is_admin():
-        return {"message": "insufficient permissions"}, 401 # = Unauthorized
+        return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()
     cursor.execute("DELETE FROM Account WHERE ID = %s;", userid)
     if cursor.rowcount == 0:
         cursor.close()
-        return {"message": "user with id %s not found" %userid}, 404 # = Not Found
+        return {"message": "User with ID %s not found." %userid}, 404 # = Not Found
     
     if userid == session['id']:
         session.pop('id', None)
 
     cursor.close()
-    return {"message": "user with id %s deleted" %userid}, 200 # = OK
+    return {"message": "User with ID %s deleted." %userid}, 200 # = OK

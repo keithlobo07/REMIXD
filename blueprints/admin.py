@@ -7,7 +7,7 @@ admins = Blueprint('admins', __name__)
 @admins.before_request
 def check_permissions():
     if not is_admin():
-        return {"message": "insufficient permissions"}, 401 # = Unauthorized
+        return {"message": "Insufficient permissions."}, 401 # = Unauthorized
 
 def is_admin():
     if not 'id' in session:
@@ -60,11 +60,11 @@ def ban_user(userid):
     sql.get_db().commit()
     if (cursor.rowcount == 0):
         cursor.close()
-        return {"message": "no user with id %s found" %userid}, 404 # = Not Found
+        return {"message": "No user with ID %s found." %userid}, 404 # = Not Found
     
     cursor.execute("DELETE FROM Review WHERE AccountID = %s", userid)
     cursor.execute("DELETE FROM Tags WHERE AccountID = %s OR ReviewAccountID = %s", (userid, userid))
     sql.get_db().commit()
     cursor.close()
     
-    return {"message":"user %s banned" %userid}, 200 # = Completes
+    return {"message":"User with ID %s banned." %userid}, 200 # = Completes

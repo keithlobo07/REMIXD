@@ -47,5 +47,5 @@ def session_check():
     # use this to check if you are logged in
 
     if 'id' in session:
-        return {"message": "logged in as %d" %session['id']}, 200 # = OK
-    return {"message": "not logged in"}, 200 # = OK
+        return {"message": "Logged in as %d." %session['id']}, 200 # = OK
+    return {"message": "Not logged in."}, 200 # = OK

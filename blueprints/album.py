@@ -73,7 +73,7 @@ def albums_reviews(albumid):
 def album_search():
     query = request.args.get("query")
     if query == None:
-        return {"message": "no query phrase"}, 400 # = Bad Request
+        return {"message": "No query phrase provided."}, 400 # = Bad Request
 
     return jsonify({
         "albums":[

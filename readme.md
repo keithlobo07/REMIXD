@@ -12,7 +12,7 @@ Dependancies:
 Hosting:
 ------
 1. Install python dependancies
-2. (optional) Host mysql locally if aws isnt working (we probably ran out of credits)
+2. (optional) Host mysql locally if AWS isnt working (we probably ran out of credits)
     1. Setup local mysql server
     2. Run sql_scripts/database_setup.sql
     3. (optional) Run sql_scripts/insert_data.sql for example data
