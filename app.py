@@ -1,6 +1,9 @@
 from flask import *
 from flaskext.mysql import MySQL
 from argon2 import PasswordHasher
+import sys
+
+sys.path.insert(0, "./blueprints")
 
 
 app = Flask(__name__)
@@ -14,6 +17,7 @@ app.config["MYSQL_DATABASE_USER"] = "admin"
 app.config["MYSQL_DATABASE_PASSWORD"] = "O75BmgKdl9ZPnacoEwwQ"
 app.config["MYSQL_DATABASE_DB"] = "remixd"
 
+<<<<<<< HEAD
 @app.route("/api/album/<albumid>")
 def album_lookup(albumid):
     return jsonify({
@@ -296,4 +300,18 @@ def signup_page():
     return render_template("signup.html"), 200
 
 if __name__ == "__main__":
+    from blueprints.user import users
+    from blueprints.album import albums
+    from blueprints.review import reviews
+    from blueprints.admin import admins
+    from blueprints.util import utils
+    from blueprints.page import pages
+
+    app.register_blueprint(users)
+    app.register_blueprint(albums)
+    app.register_blueprint(reviews)
+    app.register_blueprint(admins)
+    app.register_blueprint(utils)
+    app.register_blueprint(pages)
+
     app.run(ssl_context='adhoc')

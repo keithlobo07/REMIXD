@@ -29,13 +29,13 @@
             </div>
             <div class="row">
                 <div class="col-xxl-3 offset-xxl-3 gx-xl-3 col-lg-4 offset-lg-2 gx-lg-2 col-12">
-                    <button type="button" class="btn" id="signupBtn" onClick="window.location.href='{{ url_for('signup_page') }}'">
+                    <button type="button" class="btn" id="signupBtn" onClick="window.location.href='{{ url_for('pages.signup_page') }}'">
                         <span>Sign up</span>
                         <img src="{{ url_for('static', filename='assets/arrow-forward.svg') }}" id="arrow">
                     </button>
                 </div>
                 <div class="col-xxl-3 gx-xxl-3 col-lg-4 col-12">
-                    <button type="button" class="btn" id="loginBtn" onClick="window.location.href='{{ url_for('login_page') }}'">
+                    <button type="button" class="btn" id="loginBtn" onClick="window.location.href='{{ url_for('pages.login_page') }}'">
                         <span>Log in</span>
                         <img src="{{ url_for('static', filename='assets/arrow-forward.svg') }}" id="arrow">
                     </button>
@@ -43,7 +43,7 @@
             </div>
             <div class="row">
                 <div class="col-12">
-                    <button type="button" class="btn" id="guestBtn" onClick="window.location.href='{{ url_for('home') }}'">
+                    <button type="button" class="btn" id="guestBtn" onClick="window.location.href='{{ url_for('pages.home') }}'">
                         <span>Continue as Guest</span>
                         <img src="{{ url_for('static', filename='assets/arrow-forward.svg') }}" id="arrow">
                     </button>

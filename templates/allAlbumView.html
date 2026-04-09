@@ -1,60 +1,100 @@
-<HTML>
-<head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/allAlbumView-style.css')}}">
-    <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
-    <title>REMIXD - Albumn View</title>
-</head>
+<html>
+  <head>
+    <title>REMIXD - Album View</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">-->
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='assets/remixd-logo.png') }}"
+    />
+    <!-- Custom CSS -->
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', filename='css/allAlbumView-style.css')}}"
+    />
+  </head>
+  <script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
 
-<main style="height:100%; width: 100%">
-<div class="container-fluid">
-    <div class="row" style="height:100%;">
+  <main style="height: 100%; width: 100%">
+    <div class="container-fluid">
+      <div class="row" style="height: 100%">
         <div class="col-md-2 col-sm-4" id="sidebar">
-            <!--LOGO AND FILERS-->
-            <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
-            <h2>REMIXD</h2>
-            <p>
-            <p>
-            <form>
-                <h4>Sort By:</h4>
-                <div id="container">
-                    <div id="row">
-                        <div id="col-6">
-                            <br>
-                            <h5>Ratings: </h5>
-                        </div>
-                        <div id="col-6">
-                            <select id="dropDown">
-                                <option>High to Low</option>
-                                <option>Low to High</option>
-                            </select>
-                            <img src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}">
-                        </div>
-                    </div>
-                    <div id="row">
-                        <div id="col-6">
-                            <br>
-                            <h5>Reviews: </h5>
-                        </div>
-                        <div id="col-6">
-                            <select id="dropDown">
-                                <option>High to Low</option>
-                                <option>Low to High</option>
-                            </select>
-                            <img src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}">
-                        </div>
-                    </div>
+          <!--LOGO AND FILERS-->
+          <img
+            src="{{url_for('static', filename='assets/remixd blue.png')}}"
+            id="logo"
+            alt="REMIXD Logo"
+            class="img-fluid"
+            style="max-width: 40px"
+          />
+          <h2>REMIXD</h2>
+          <p></p>
+          <p></p>
+          <form>
+            <h4>Sort By:</h4>
+            <div id="container">
+              <div id="row">
+                <div id="col-6">
+                  <br />
+                  <h5>Ratings:</h5>
                 </div>
-                <br>
-                <br>
-                <h4>Filter By:</h4>
-                    <h6>Rating:</h6>
-                    <input type="number" id="ratingFilter" name="ratingFilter" min="0" max="5">
-                    <br>
-                    <h6>Review Date</h6>
-                    <input type="date" id="reviewDate" name="reviewDate">
-            </form>        
+                <div id="col-6">
+                  <select id="dropDown">
+                    <option>High to Low</option>
+                    <option>Low to High</option>
+                  </select>
+                  <img
+                    src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}"
+                  />
+                </div>
+              </div>
+              <div id="row">
+                <div id="col-6">
+                  <br />
+                  <h5>Reviews:</h5>
+                </div>
+                <div id="col-6">
+                  <select id="dropDown">
+                    <option>High to Low</option>
+                    <option>Low to High</option>
+                  </select>
+                  <img
+                    src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}"
+                  />
+                </div>
+              </div>
+            </div>
+            <br />
+            <br />
+            <h4>Filter By:</h4>
+            <h6>Rating:</h6>
+            <input
+              type="number"
+              id="ratingFilter"
+              name="ratingFilter"
+              min="0"
+              max="5"
+            />
+            <br />
+            <h6>Review Date</h6>
+            <input type="date" id="reviewDate" name="reviewDate" />
+          </form>
         </div>
         <div class="col-md-10 col-sm-8">
             <!--SEARCH AND ALBUMS-->
@@ -108,11 +148,78 @@
                             </div>
                    </div>
                 </div>
+              </div>
             </div>
+            <p></p>
+            <p></p>
+            <div class="row" style="height: auto">
+              <div class="col d-flex flex-column">
+                <!--CARD NOTE FROM ALBUM VIEW-->
+                {% for album in albums %}
+                <div class="card" id="card">
+                  <div class="card-body">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-3">
+                          <img
+                            src="{{ album.albumArt }}"
+                            style="
+                              width: clamp(100px, 13vw, 200px);
+                              padding: 5px;
+                            "
+                          />
+                        </div>
+                        <div class="col-9" style="padding-left: 5%">
+                          <!--make link to the album-->
+                          <div class="row">
+                            <div class="col-5">
+                              <h5>{{ album.strAlbum }}</h5>
+                            </div>
+                            <div class="col-7 text-right">
+                              {% set rating = album.avgRating|float %} {% set
+                              percent = (rating/5) * 100 %}
+
+                              <div class="starRating">
+                                <div class="starBackground">★★★★★</div>
+                                <div
+                                  class="starYellow"
+                                  style="width: {{ percent }}%;"
+                                >
+                                  ★★★★★
+                                </div>
+                              </div>
+                              <span>
+                                {{ rating }} ({{ album.numReviews }})</span
+                              >
+                            </div>
+                          </div>
+                          <p>{{ album.strArtist }}</p>
+                          <p></p>
+                          <p>{{ album.intYearReleased }}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+<<<<<<< HEAD
 </div>
 </main>
 <footer>
 </footer>
 <script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
+=======
+  </main>
+  <footer>
+    <body>
+      foot feet feety foot
+    </body>
+  </footer>
+</html>
+>>>>>>> 0212f8924737efec37ce5a1c272bc31ea933971b
