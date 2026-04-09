@@ -4,6 +4,7 @@ from app import sql
 admins = Blueprint('admins', __name__)
 
 
+# nothing in this blueprint should be accessed by non admins
 @admins.before_request
 def check_permissions():
     if not is_admin():

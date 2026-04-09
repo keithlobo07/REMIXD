@@ -11,12 +11,13 @@ def is_banned():
     cursor.execute("SELECT modTags FROM Account WHERE ID = %s;" %(session['id']))
     result = cursor.fetchone()[0]
     cursor.close()
-    return bool(result & 1)
+    return bool(result & 1) # banned users have modtags = 0b00000001
 
 def user_data(userid):
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT * FROM Account WHERE ID=%s LIMIT 1;",  str(userid))
     user = cursor.fetchone()
+
     if 'id' in session:
         # user is logged in -> perspective data
         cursor.execute("SELECT Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, IFNULL(Tags.info & 128 = 128, 0) as user_like, IFNULL(Tags.info & 64 = 64, 0) as user_report FROM Review JOIN Account ON Account.ID = Review.AccountID LEFT JOIN Tags ON Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.AccountID = %s WHERE Review.AccountID=%s ORDER BY Review.timestamp DESC LIMIT 5;", (session['id'], userid))
@@ -44,7 +45,10 @@ def user_data(userid):
 
 @users.get("/api/user/<userid>")
 def user_lookup(userid):
-    return jsonify(user_data(userid))
+    data = user_data(userid)
+    if data == None:
+        return {"message":"User with ID %s not found."}, 404 # = Not Found
+    return jsonify(user_data(userid)), 200 # = OK
 
 @users.post("/api/user")
 def signup():
