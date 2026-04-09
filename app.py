@@ -151,11 +151,11 @@ def album_search():
             "idAlbum" : elements['id'],
             "albumName" : elements["title"],
             "artist" : elements["artist-credit-phrase"],
-            "releaseDate" : elements["first-release-date"],
+            "releaseDate" : elements["first-release-date"]
         }
         searchResults.append(trimmedAlbumData)
 
-    return searchResults
+    return jsonify(searchResults)
 
 
 @app.route("/api/review/<userid>/<albumid>")
