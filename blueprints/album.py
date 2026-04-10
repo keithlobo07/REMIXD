@@ -1,5 +1,5 @@
 from flask import *
-#from app import sql
+from app import sql
 from admin import is_admin
 import musicbrainzngs as mb
 albums = Blueprint('albums', __name__)
@@ -7,7 +7,6 @@ albums = Blueprint('albums', __name__)
 mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
 mb.set_rate_limit(1)
 
-trimmedData = {}
 
 def album_lookup_data(albumid):
     #release group - d706457-8b16-4809-a61a-cdba1b281d39 - brand new eyes paramore
@@ -34,6 +33,10 @@ def album_lookup_data(albumid):
         "coverArt" : mb.get_image_list(albumid)['images'][00]['image'],
         "trackList":trimmedTrackList
     }
+
+    review_info = album_review_info(albumid)
+    trimmedData['numReviews'] = review_info['numReviews']
+    trimmedData['avgScore'] = review_info['avgScore']
 
     return trimmedData
 

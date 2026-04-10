@@ -5,6 +5,9 @@ from urllib import response
 from flask import *
 from flaskext.mysql import MySQL
 from argon2 import PasswordHasher
+import sys
+
+sys.path.insert(1, "./blueprints")
 
 
 app = Flask(__name__)
@@ -34,4 +37,4 @@ if __name__ == "__main__":
     app.register_blueprint(utils)
     app.register_blueprint(pages)
 
-    app.run()
+    app.run(ssl_context='adhoc', host="0.0.0.0", port=80)
