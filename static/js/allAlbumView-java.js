@@ -36,7 +36,7 @@ fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
         document.getElementById("albumRelease").innerText = data.releaseDate;
         document.getElementById("albumArtist").innerText = data.artist;
         //document.getElementById("albumRating").innerText = data.avgRating;
-        //document.getElementById("albumRatingNo").innerText = data.numReviews;
+        document.getElementById("albumRatingNo").innerText = data.numReviews;
 
         //for the stars
         //const rating = parseFloat(data.avgRating);
