@@ -2,12 +2,12 @@ export function review_card(review) {
     const card = document.createElement("div");
     card.className = "review-card container-fluid";
     card.id = review.id;
+    console.log("shit1");
     card.innerHTML =`<div class="card-body">
                         <div class = "container">
                             <div class="row">
                                 <div class="col-5">
-                                    <!--make link to the usernames profile-->
-                                    <!--CHANGE TO USERNAME!!-->
+                                    <!--user profile-->
                                     <a href="/user/${review.id}"><h5>${review.name}</h5></a>
                                 </div>
                                 <div class="col-5 text-right">

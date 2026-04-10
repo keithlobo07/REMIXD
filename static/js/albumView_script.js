@@ -1,4 +1,4 @@
-import {review_card} from "./components/review_card.js";
+import { review_card } from "./components/review_card.js";
 
 export function add_reviews(albumid) {
     review_section = document.getElementById("review_section")

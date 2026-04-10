@@ -115,7 +115,6 @@ def album_search_data(query):
         trimmedAlbumData['avgScore'] = review_info['avgScore']
 
         searchResults.append(trimmedAlbumData)
-
     return searchResults
 
 @albums.route("/api/album/search")
@@ -125,7 +124,6 @@ def album_search():
         return {"message": "No query phrase provided."}, 400 # = Bad Request
 
     data = album_search_data(query)
-
     if data == None:
         return {"message":"Album search returned no data."}, 404 # = Not Found
     return jsonify(data), 200
