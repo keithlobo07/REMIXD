@@ -113,3 +113,47 @@ def album_search():
     if data == None:
         return {"message":"Album search returned no data."}, 404 # = Not Found
     return jsonify(data), 200
+
+@albums.get("/api/album")
+def album_home():
+    sort = request.args.get("sort", type=str)
+    score = request.args.get("score", type=float)
+    afterdate = request.args.get("afterdate", type=str)
+    beforedate = request.args.get("beforedate", type=str)
+
+    print(sort, score, afterdate, beforedate)
+
+    match sort:
+        case "reviews-asc":
+            sort = "COUNT(*) ASC"
+        case "reviews-desc":
+            sort = "COUNT(*) DESC"
+        case "rating-asc":
+            sort = "AVG(Score) ASC"
+        case "rating-desc":
+            sort = "AVG(Score) DESC"
+        case _:
+            sort = "AVG(Score) DESC"
+
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT AlbumID, AVG(Score), COUNT(*) FROM Review WHERE (Score = %s) AND (timestamp BETWEEN %s AND %s) GROUP BY AlbumID ORDER BY %s LIMIT 5;", 
+                   (score if score != None else "0 OR 1=1",
+                    beforedate if beforedate != None else "1000-01-01",
+                    afterdate if afterdate != None else "9999-12-31",
+                    sort
+                    ))
+    result = cursor.fetchall()
+
+    print("SELECT AlbumID, AVG(Score), COUNT(*) FROM Review WHERE (Score = %s) AND (timestamp BETWEEN '%s' AND '%s') GROUP BY AlbumID ORDER BY %s LIMIT 5;" % 
+                   (score if score != None else "0 OR 1=1",
+                    beforedate if beforedate != None else "1000-01-01",
+                    afterdate if afterdate != None else "9999-12-31",
+                    sort
+                    ))
+    [print(x) for x in result]
+
+    return jsonify({
+        "albumids":[x[0] for x in result]
+    })
+
+
