@@ -2,6 +2,7 @@ from flask import *
 from app import sql
 from admin import is_admin
 import musicbrainzngs as mb
+from review import recent_reviews_data
 albums = Blueprint('albums', __name__)
 
 mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
@@ -37,6 +38,7 @@ def album_lookup_data(albumid):
     review_info = album_review_info(albumid)
     trimmedData['numReviews'] = review_info['numReviews']
     trimmedData['avgScore'] = review_info['avgScore']
+    trimmedData['reviewed'] = review_info['reviewed']
 
     return trimmedData
 
@@ -53,9 +55,13 @@ def album_review_info(albumid):
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT COUNT(*), AVG(Score) FROM Review WHERE AlbumID = %s;", albumid)
     reviews, avg_score = cursor.fetchone()
+    reviewed = 0
+    if 'id' in session:
+        cursor.execute("SELECT 1 FROM Review WHERE AccountID=%s AND AlbumID=%s", (session['id'], albumid))
+        reviewed = cursor.fetchone()
     cursor.close()
 
-    return {"numReviews":reviews, "avgScore":avg_score}
+    return {"numReviews":reviews if reviews != None else 0, "avgScore":(avg_score / 2) if avg_score != None else 0, "reviewed":reviewed}
 
 
 @albums.get("/api/album/<albumid>/reviews")
@@ -89,15 +95,25 @@ def albums_reviews(albumid):
         })
 
 def album_search_data(query):
-    responseData = mb.search_release_groups(query, limit=20) # type: ignore
+    responseData = mb.search_release_groups(query, limit=5) # type: ignore
     searchResults = []
     for elements in responseData['release-group-list']:
         trimmedAlbumData = {
-            "idAlbum" : elements['id'],
+            "idAlbum" : elements['release-list'][-1]['id'],
             "albumName" : elements["title"],
             "artist" : elements["artist-credit-phrase"],
-            "releaseDate" : elements["first-release-date"]
         }
+
+        try:
+            trimmedAlbumData["releaseDate"] = elements["first-release-date"]
+        except:
+            #trimmedAlbumData["releaseDate"] = elements['release-date']
+            pass
+
+        review_info = album_review_info(trimmedAlbumData['idAlbum'])
+        trimmedAlbumData['numReviews'] = review_info['numReviews']
+        trimmedAlbumData['avgScore'] = review_info['avgScore']
+
         searchResults.append(trimmedAlbumData)
     return searchResults
 
@@ -111,3 +127,46 @@ def album_search():
     if data == None:
         return {"message":"Album search returned no data."}, 404 # = Not Found
     return jsonify(data), 200
+
+@albums.get("/api/album")
+def album_home():
+    sort = request.args.get("sort", type=str)
+    score = request.args.get("score", type=float)
+    afterdate = request.args.get("afterdate", type=str)
+    beforedate = request.args.get("beforedate", type=str)
+
+    print(sort, score, afterdate, beforedate)
+
+    match sort:
+        case "reviews-asc":
+            sort = "COUNT(*) ASC"
+        case "reviews-desc":
+            sort = "COUNT(*) DESC"
+        case "rating-asc":
+            sort = "AVG(Score) ASC"
+        case "rating-desc":
+            sort = "AVG(Score) DESC"
+        case _:
+            sort = "AVG(Score) DESC"
+
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT AlbumID, AVG(Score), COUNT(*) FROM Review WHERE (Score = %s) AND (timestamp BETWEEN %s AND %s) GROUP BY AlbumID ORDER BY %s LIMIT 5;", 
+                   (score if score != None else "0 OR 1=1",
+                    beforedate if beforedate != None else "1000-01-01",
+                    afterdate if afterdate != None else "9999-12-31",
+                    sort
+                    ))
+    result = cursor.fetchall()
+
+    return jsonify({
+        "albumids":[x[0] for x in result]
+    })
+
+def recently_reviewed_albums():
+    reviews = recent_reviews_data()
+    albums = []
+    for review in reviews:
+        print(review)
+        albums.append(album_lookup_data(review['albumid']))
+    return albums
+

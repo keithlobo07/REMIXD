@@ -47,55 +47,7 @@
           <h2>REMIXD</h2>
           <p></p>
           <p></p>
-          <form>
-            <h4>Sort By:</h4>
-            <div id="container">
-              <div id="row">
-                <div id="col-6">
-                  <br />
-                  <h5>Ratings:</h5>
-                </div>
-                <div id="col-6">
-                  <select id="dropDown">
-                    <option>High to Low</option>
-                    <option>Low to High</option>
-                  </select>
-                  <img
-                    src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}"
-                  />
-                </div>
-              </div>
-              <div id="row">
-                <div id="col-6">
-                  <br />
-                  <h5>Reviews:</h5>
-                </div>
-                <div id="col-6">
-                  <select id="dropDown">
-                    <option>High to Low</option>
-                    <option>Low to High</option>
-                  </select>
-                  <img
-                    src="{{url_for('static', filename='assets/keyboard_arrow_down.png')}}"
-                  />
-                </div>
-              </div>
-            </div>
-            <br />
-            <br />
-            <h4>Filter By:</h4>
-            <h6>Rating:</h6>
-            <input
-              type="number"
-              id="ratingFilter"
-              name="ratingFilter"
-              min="0"
-              max="5"
-            />
-            <br />
-            <h6>Review Date</h6>
-            <input type="date" id="reviewDate" name="reviewDate" />
-          </form>
+          
         </div>
         <div class="col-md-10 col-sm-8">
             <!--SEARCH AND ALBUMS-->
@@ -110,21 +62,65 @@
                         <div class="dropdown" style="margin-top: 15px;">
                             <button onclick="menuDrop()" class="dropbtn" style="width: 40px; height: 40px;"></button>
                             <div id="myDropdown" class="menuContent">
+                              {% if logintype == 1 %}
+                                <a href="/user/{{ session['id'] }}">Profile</a>
+                                <a href="{{ url_for('utils.logout') }}">Log out</a>
+                              {% elif logintype == 2 %} 
+                                <a href="{{ url_for('pages.admin_page') }}">Admin Dashboard</a>
+                                 <a href="/user/{{ session['id'] }}">Profile</a>
+                                <a href="{{ url_for('utils.logout') }}">Log out</a>
+                              {% else %}
                                 <a href="{{ url_for('pages.login_page') }}">Login</a>
                                 <a href="{{ url_for('pages.signup_page') }}">Sign Up</a>
+                              {% endif %}
                             </div>
                         </div>
                     </div>
                 </div>
                 <p>
                 <p>
+                {% for album in albums %}
                 <div class="row" style="height: auto">
                     <div class="col d-flex flex-column">
-                      <div id="albumList"></div>
-                    </div>
+                        <!--CARD NOTE FROM ALBUM VIEW-->
+                            <div class="card" id="card">
+                              <a href="/album/{{album.idAlbum}}">
+                                <div class="card-body">
+                                    <div class = "container">
+                                        <div class="row">
+                                            <div class="col-3">
+                                                <img id="albumCover" alt="album cover" style="width: clamp(100px, 13vw, 200px); padding :5px;" src="{{ album.coverArt }}">
+                                            </div>
+                                            <div class="col-9" style="padding-left: 5%;">
+                                                <!--make link to the album-->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <h5 id="albumTitle">{{ album.albumName }}</h5>
+                                                    </div>
+                                                    <div class="col-7 text-right">
+                                                        <div class="starRating">
+                                                          <div class="starBackground">★★★★★</div>
+                                                          <div class="starYellow" style="width: {{ album.avgScore * 10 }}%;">★★★★★</div>
+                                                      </div>
+                                                      <span id="albumRating">{{ album.numReviews }}</span>
+                                                    </div>
+                                                </div>
+                                                <p id="albumArtist">{{ album.artist }}  </p>
+                                                <p>
+                                                <p id="albumRelease">{{ album.releasedate }} </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </a>
+                            </div>
+                   </div>
+
                 </div>
               </div>
             </div>
+            <p></p>
+            <p></p>
           </div>
         </div>
       </div>
@@ -139,3 +135,6 @@
   <script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
   <script type="module">import {add_reviews} from "{{url_for('static', filename='js/userView_script.js')}}"; </script>
 </footer>
+
+<script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
+<script src="{{url_for('static',filename='js/menu_script.js')}}"></script>

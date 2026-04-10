@@ -27,21 +27,18 @@ API Usage:
 ----------
 <h3>Albums</h3>
 <h4>Album information</h4>
-Format: /api/album/\<albumid\> <br>
-Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
-Example response:<br><br>
+Format: /api/album/<em>albumid</em> <br>
+Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49<br><br>
 Returns relevant information for a specific album given its Musicbrainz release group ID. Takes at least one second to execute since it needs to adhere to Musicbrainz's rate limits. Includes the tracklist of the release group's earliest release.
 
 <h4>Album reviews</h4>
-Format: /api/album/\<albumid\>/reviews<br>
-Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49/reviews?limit=3
-Example response: <br><br>
+Format: /api/album/<em>albumid</em>/reviews<br>
+Example request: /api/album/21159e3f-172e-43f6-aa7d-8e06a81fea49/reviews?limit=3<br><br>
 Returns a number (default 5) of reviews for an album given its Musicbrainz id.
 
 <h4>Album search</h4>
-Format: /api/album/search?query="\<queryphrase\>"<br>
-Example request: /api/albums?query="Illmatic"<br>
-Example response: <br><br>
+Format: /api/album/search?query="<em>queryphrase</em>"<br>
+Example request: /api/albums?query="Illmatic"<br><br>
 Searches the Musicbrainz database using their api and returns the release groups matching the given phrase. Includes artist and release group title.<br>
 Returns 400 if query parameter is missing.
 
@@ -49,18 +46,15 @@ Returns 400 if query parameter is missing.
 
 <h3>Users</h3>
 <h4>Lookup / Get</h4>
-Format: /api/user/\<userid\><br>
+Format: /api/user/<em>userid</em><br>
 Required method: Get<br>
-Example request: /api/user/1<br>
-Example response: <br><br>
+Example request: /api/user/1<br><br>
 Returns impersonal information about a user. Includes their five most recent reviews. If you have an active login, the reviews will contain like and report data from your perspective.
 
 <h4>Post</h4>
 Format: /api/user<br>
 Required method: Post<br>
 Required body: form containing email, username and password fields<br>
-Example request: <br>
-Example response: <br>
 HTTP response codes:<br>
 - 201 on successful account creation<br>
 - 303 to home page if already logged in<br>
@@ -70,11 +64,9 @@ HTTP response codes:<br>
 Creates a user account with the provided information. Automatically logs in as the new user.
 
 <h4>Put</h4>
-Format: /api/user/\<userid\><br>
+Format: /api/user/<em>userid</em><br>
 Required method: Put<br>
 Required body: form containing at least one of 'name', 'password', or 'bio'<br>
-Example request:<br>
-Example response:<br>
 HTTP response codes:<br>
 - 200 if user was updated<br>
 - 400 if form contains none of 'name', 'password', or 'bio'<br>
@@ -83,10 +75,8 @@ HTTP response codes:<br>
 Updates a user account with the provided information. Admins can change any user's information. Standard users can only change their own. Returns a message detailing what fields were changed.
 
 <h4>Delete</h4>
-Format: /api/user/\<userid\><br>
+Format: /api/user/<em>userid</em><br>
 Required method: Delete<br>
-Example request:<br>
-Example response:<br>
 HTTP response codes:<br>
 - 200 on successful deletion<br>
 - 401 if trying to delete another user<br>
@@ -98,10 +88,9 @@ Removes a user account from the database. Admins may delete any user. Standard u
 
 <h3>Reviews</h3>
 <h4>Lookup / Get</h4>
-Format: /api/review/\<userid\>/\<albumid\><br>
-Required method: Get
+Format: /api/review/<em>userid</em>/<em>albumid</em><br>
+Required method: Get<br>
 Example request: /api/review/1/21159e3f-172e-43f6-aa7d-8e06a81fea49<br>
-Example response:<br>
 HTTP response codes:<br>
 - 404 if review could not be found<br>
 - 200 on successful lookup<br><br>
@@ -110,15 +99,30 @@ Returns one specific review given a user and Musicbrainz release group id. If yo
 
 <h4>Post</h4>
 Format: /api/review<br>
+Required method: Post<br>
+Requred form: 'album_id', 'score', 'content'<br>
+HTTP response codes:<br>
+- 200 on successful posting<br>
+- 400 if not logged in or incomplete form<br>
+- 403 if user is banned<br><br>
+
+Adds a review to the database with the supplied information. Attributed to the currently logged in user.
 
 <h4>Put</h4>
-Format:
+Format: /api/review/<em>userid</em>/<em>accountid</em><br>
+Required method: Put<br>
+Required form: 'score', 'content'<br>
+HTTP response codes:<br>
+- 200 on successful edit<br>
+- 400 if not logged in or incomplete form<br>
+- 403 if user is banned<br>
+- 404 if no review matching arguments found<br><br>
+
+Edits an already existing review in the database. Must be your own review or must be an admin account.
 
 <h4>Delete</h4>
-Format: /api/review/\<userid\>/\<albumid\><br>
+Format: /api/review/<em>userid</em>/<em>albumid</em><br>
 Required method: Delete<br>
-Example request: <br>
-Example response: <br>
 HTTP response codes: <br>
 - 200 on successful deletion<br>
 - 404 if review could not be found<br>
@@ -127,10 +131,9 @@ HTTP response codes: <br>
 Deletes a review from the database. Admins may delete any review. Standard users can only delete their own. Deletes all records of likes and reports from the database as well.
 
 <h4>Tags</h4>
-Format: /api/review/\<userid\>/\<albumid\>/tags<br>
+Format: /api/review/<em>userid</em>/<em>albumid</em>/tags<br>
 Required method: Post<br>
-Example request: <br>
-Example response: <br>
+Example request: /api/review/1/11755c21-2546-4cb3-9b87-392f4f3c2fa2/tags<br>
 HTTP response codes: <br>
 - 400 if not logged in<br>
 - 200 on successful tag update<br><br>
@@ -139,7 +142,7 @@ Updates the tag information (likes, reports) on a given review from the currentl
 
 ---
 
-<h3>Admin</h3>
+<h3>Admin - ### Requires an admin login ###</h3>
 <h4>Review search</h4>
 Format: /api/admin/reviews<br>
 Example response:<br><br>
@@ -156,9 +159,8 @@ Example response:<br><br>
 Returns the number of posts made each month for the past 12 months.
 
 <h4>Ban user</h4>
-Format: /api/admin/ban/\<userid\>
+Format: /api/admin/ban/<em>userid</em>
 Example request: /api/admin/ban/1<br>
-Example response: {"message":"User 1 banned."}, 200<br>
 HTTP response codes:<br>
 - 200 on successful ban<br>
 - 404 if no user with given id found<br><br>
@@ -172,8 +174,6 @@ Disables a user's ability to post and edit reviews. Deletes all current reviews 
 <h4>Log in / Authenticate</h4>
 Format: /api/authenticate **POST method only**<br>
 Required body: form containing email and username<br>
-Example request: <br>
-Example response: <br>
 HTTP response codes:<br>
 - 303 to home page on successful login <br>
 - 403 on incorrect login <br><br>
@@ -182,7 +182,6 @@ Logs in as the user associated with the given email and password. Adds user id t
 
 <h4>Log out</h4>
 Format: /api/logout<br>
-Example response: <br>
 HTTP response codes: <br>
 - 303 to lander page <br><br>
 

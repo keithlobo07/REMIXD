@@ -1,8 +1,8 @@
 from flask import *
 from app import sql
-from album import album_search_data, album_lookup_data
+from album import album_search_data, album_lookup_data, recently_reviewed_albums
 from admin import is_admin, admin_review_count
-from user import user_data
+from user import user_data, login_type
 
 pages = Blueprint('pages', __name__)
 
@@ -27,19 +27,21 @@ def signup_page():
 
 @pages.route("/user/<userid>")
 def user_page(userid):
-    return render_template("userView.html", user=user_data(userid), ownprofile=int(userid)==session['id'])
+    return render_template("userView.html", user=user_data(userid), ownprofile=int(userid)==session['id'], logintype=login_type())
 
 
 @pages.route("/album/<albumid>")
 def album_view(albumid):
     album = album_lookup_data(albumid)
-    return render_template("albumView.html", album = album)
+    return render_template("albumView.html", album = album, button=('id' in session and not album['reviewed']), logintype=login_type())
   
 @pages.route("/home")
 def home():
-    albums = album_search_data("riot!")
-    print(albums)
-    return render_template("allAlbumView.html", albums=albums)
+    query = request.args.get("search")
+    if query != None:
+        [print(x) for x in album_search_data(query)]
+        return render_template("allAlbumView.html", albums=album_search_data(query), logintype = login_type())
+    return render_template("allAlbumView.html", albums=recently_reviewed_albums(), logintype = login_type())
 
 @pages.route("/admin")
 def admin_page():

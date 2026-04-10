@@ -9,7 +9,33 @@ function loadAnalytics() {
         throw Error("Graph data retrieval failed.");
       }
 
-      const ctx = document.getElementById("analytics_chart");
+    fetch("/api/admin/statistics").then(response => {
+        return response.json()
+
+    }).then(data => {
+        let graph_data = data.data;
+        if (graph_data === undefined) {
+            throw Error("Graph data retrieval failed.");
+        }
+
+            const ctx = document.getElementById('analytics_chart');
+
+        const chartData = {
+            labels: ["11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0"],
+            datasets: [{
+                backgroundColor: "rgba(210, 252, 255, 0.2)",
+                borderColor: "rgba(210, 252, 255, 1)",
+                data: graph_data, // Placeholder data - replace with actual data from backend
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        }
+
+        Chart.defaults.style = "bold";
+        Chart.defaults.color = "#EFE9FF";
+        Chart.defaults.font.family = "DM Sans, sans-serif";
+        Chart.defaults.plugins.tooltip.titleFont.size = 16;
+        Chart.defaults.plugins.tooltip.backgroundColor = "#1d4376";
 
       const chartData = {
         labels: [

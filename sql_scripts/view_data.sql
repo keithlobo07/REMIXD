@@ -3,7 +3,13 @@ USE `remixd`;
 #SELECT * FROM Account;
 #SELECT * FROM Review;
 SELECT * FROM Tags;
-SELECT ReviewAccountID, ReviewAlbumID, COUNT(*) as Reports FROM Tags WHERE ((info & 64) = 64) GROUP BY ReviewAccountID, ReviewAlbumID ORDER BY Reports DESC LIMIT 5;
+#SELECT ReviewAccountID, ReviewAlbumID, COUNT(*) as Reports FROM Tags WHERE ((info & 64) = 64) GROUP BY ReviewAccountID, ReviewAlbumID ORDER BY Reports DESC LIMIT 5;
+
+#SELECT AlbumID, AVG(Score), COUNT(*) FROM Review WHERE (Score = 0 OR 1=1) AND (timestamp BETWEEN "1000-01-01" AND "9999-12-31") GROUP BY AlbumID ORDER BY AVG(Score) DESC LIMIT 5;
+#SELECT AlbumID, AVG(Score), COUNT(*) FROM Review WHERE (Score = 0 OR 1=1) AND (timestamp BETWEEN '1000-01-01' AND '9999-12-31') GROUP BY AlbumID ORDER BY COUNT(*) ASC LIMIT 5;
+
+SELECT AlbumID, AVG(Score), COUNT(*) FROM Review WHERE (Score = 0 OR 1=1) AND (timestamp BETWEEN '1000-01-01' AND '9999-12-31') GROUP BY AlbumID ORDER BY COUNT(*) ASC LIMIT 5;
+
 #SELECT IF(info & 128 = 128, True, False) FROM Tags;
 #SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=2130752 ORDER BY Review.timestamp DESC LIMIT 3;
 

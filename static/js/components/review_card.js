@@ -25,13 +25,14 @@ export function review_card(review) {
                             <div class="row">
                                 <div class="col" style="text-align:right;">` +
                                 (review.user_report !== undefined ? `<img src="/static/assets/flag${review.user_report}.png" id="flag-${review.id}" aria-valuenow="${review.user_report}">` : ``) + 
-                                ((review.is_admin == 1 | review.is_own == 1)? `<img src="/static/assets/flag0.png" id="admin-${review.id}">` : ``) + 
+                                ((review.is_admin == 1 | review.is_own == 1)? `<img src="/static/assets/delete.png" id="admin-${review.id}">` : ``) + 
                                 `</div>
                             </div>
                         </div>
                     </div>`
     
     if (review.user_report !== undefined) card.querySelector(`#flag-${review.id}`).addEventListener("mousedown", function(){flag_review(review.albumid, review.id)});
+    if (review.is_admin == 1 | review.is_own == 1) card.querySelector(`#admin-${review.id}`).addEventListener("mousedown", function(){delete_review(review.albumid, review.id)})
 
 
     return card
@@ -53,5 +54,17 @@ function flag_review(albumid, accountid) {
         console.log(response)
     });
 
-    flag.src = (flag.ariaValueNow ? "/static/assets/flag0.png" : "/static/assets/flag1.png");
+    flag.src = `/static/assets/flag${flag.ariaValueNow}.png`
+}
+
+function delete_review(albumid, accountid) {
+
+    const r =  new Request(`/api/review/${accountid}/${albumid}`, {
+        method: "DELETE"
+    })
+
+    fetch(r).then(response => {
+        if (response.ok) {window.location.reload()}
+        else (console.error("Failed to delete review."))
+    })
 }

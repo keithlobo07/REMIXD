@@ -20,7 +20,8 @@ window.onclick = function(event){
     }
 }
 
-fetch('/api/album/search?query=riot')
+/*
+fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
     .then(response => {
         if (!response.ok){
             throw new Error('HTTP error - currrent status ${response.status}');       
@@ -38,5 +39,5 @@ fetch('/api/album/search?query=riot')
     })
     .catch(error => {
         console.error('Error fetching data', error);
-        alert('failed to gather data, please try again later')
     });
+*/
