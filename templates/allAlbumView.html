@@ -36,6 +36,7 @@
       <div class="row" style="height: 100%">
         <div class="col-md-2 col-sm-4" id="sidebar">
           <!--LOGO AND FILERS-->
+          <a href="{{ url_for('pages.lander') }}"></a>
           <img
             src="{{url_for('static', filename='assets/remixd blue.png')}}"
             id="logo"
@@ -43,6 +44,7 @@
             class="img-fluid"
             style="max-width: 40px"
           />
+          </a>
           <h2>REMIXD</h2>
           <p></p>
           <p></p>
@@ -109,8 +111,8 @@
                         <div class="dropdown" style="margin-top: 15px;">
                             <button onclick="menuDrop()" class="dropbtn" style="width: 40px; height: 40px;"></button>
                             <div id="myDropdown" class="menuContent">
-                                <a href="">Login</a>
-                                <a href="">Sign Up</a>
+                                <a href="{{ url_for('pages.login_page') }}">Login</a>
+                                <a href="{{ url_for('pages.signup_page') }}">Sign Up</a>
                             </div>
                         </div>
                     </div>
@@ -180,11 +182,6 @@
 
                               <div class="starRating">
                                 <div class="starBackground">★★★★★</div>
-                                <div
-                                  class="starYellow"
-                                  style="width: {{ percent }}%;"
-                                >
-                                  ★★★★★
                                 </div>
                               </div>
                               <!-- <span>
