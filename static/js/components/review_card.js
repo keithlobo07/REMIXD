@@ -8,7 +8,7 @@ export function review_card(review) {
                                 <div class="col-5">
                                     <!--make link to the usernames profile-->
                                     <!--CHANGE TO USERNAME!!-->
-                                    <h5>${review.name}</h5>
+                                    <a href="/user/${review.id}"><h5>${review.name}</h5></a>
                                 </div>
                                 <div class="col-5 text-right">
                                     <div class="starRating">
@@ -25,7 +25,7 @@ export function review_card(review) {
                             <div class="row">
                                 <div class="col" style="text-align:right;">` +
                                 (review.user_report !== undefined ? `<img src="/static/assets/flag${review.user_report}.png" id="flag-${review.id}" aria-valuenow="${review.user_report}">` : ``) + 
-                                (review.is_admin !== undefined ? `<img src="/static/assets/flag0.png" id="admin-${review.id}">` : ``) + 
+                                ((review.is_admin == 1 | review.is_own == 1)? `<img src="/static/assets/flag0.png" id="admin-${review.id}">` : ``) + 
                                 `</div>
                             </div>
                         </div>

@@ -65,7 +65,7 @@ def albums_reviews(albumid):
         cursor.close()
 
         return jsonify({
-            "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6], "user_liked":x[7], "user_report":x[8], "albumid":x[9], "is_admin":a} for x in results]
+            "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6], "user_liked":x[7], "user_report":x[8], "albumid":x[9], "is_admin":a, "is_own":int(int(x[0]) == session['id'])} for x in results]
         })
     else:
         # no login -> anonymous data

@@ -29,7 +29,8 @@ def review_data(userid, albumid):
             "numLikes":data[6],
             "user_liked":data[7],
             "user_report":data[8],
-            "is_admin":a
+            "is_admin":a,
+            "is_own":int(int(userid) == session['id'])
         }
     else:
         cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, (SELECT Account.Name From Account WHERE ID=Review.AccountID) as author FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
@@ -97,7 +98,7 @@ def update_review(account_id, album_id):
 
 @reviews.delete("/api/review/<userid>/<albumid>")
 def delete_review(account_id, album_id):
-    if session['id'] != account_id and not is_admin():
+    if session['id'] != int(account_id) and not is_admin():
         return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()

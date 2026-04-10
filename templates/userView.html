@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{{url_for('static', filename='css/general.css')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/userView-style.css')}}">
     <link rel="icon" href="{{url_for('static', filename='assets/remixd-logo.png')}}">
-    <title>REMIXD - Albumn View</title>
+    <title>{{ user.name }}'s Profile</title>
 </head>
 <main style="height:100%">
     <div class="container">
@@ -35,11 +35,50 @@
         </div>
     </div>
 
+    {% if ownprofile %}
+    <div class="row">
+        <div class="col-10">
+        </div>
+        <div class="col-1">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn" data-toggle="modal" data-target="#editProfile" style="width: 150px">
+                <h5>EDIT PROFILE</h5>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="editLabel" aria-hidden="true">
+    <div class="modal-dialog" id="editProfileStyle">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editLabel">Edit Profile</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">X</span>
+            </button>
+        </div>
+        <form>
+        <div class="modal-body">
+            <h3>Edit Username:</h3><br>
+            <input type="text" id="username" name="username">
+            <br>
+            <h3>Edit Biography:</h3><br>
+            <textarea id="biography" name="biography" rows="5" cols="50"></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" value="Submit">Submit</button>
+        </div>
+        </form>
+        </div>
+    </div>
+    </div>
+    {% endif %}
+
     <!--Right hand col (artist info)-->
     <div class="row">
         <div class="col" style="text-align:center">
             <!--CHANGE TO USERNAME-->
-            <h1 id="username"></h1>
+            <h1>{{ user.name }}'s Profile</h1>
         </div>
     </div>
 </div>
@@ -55,39 +94,9 @@
                 <div class="col-6">
                     <h4>Recent Reviews</h4>
                 </div>
-                <div class = "col-6" style="text-align: right;">
-                    <!--page changer-->
-                    <p>PAGE < > 1/2</p>
-                </div>
             </div>
-            <div class="row">
+            <div class="row" id="review_section">
                 <!--REVIEWS GO HERE-->
-                <div class="card container-fluid" id="card">
-                    <div class="card-body">
-                        <div class = "container">
-                            <div class="row">
-                                <div class="col-5">
-                                    <!--make link to the usernames profile-->
-                                    <h5 id="username"></h5>
-                                </div>
-                                <div class="col-5 text-right">
-                                    <img src="{{url_for('static', filename='assets/starPlaceH.png')}}" alt="stars PLACEHOLDER" style="max-width:100px;">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <p id="reviewContent"></p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col" style="text-align:right;">
-                                    <!--make both buttoms, change to red once clicked-->
-                                    <img src="{{url_for('static', filename='assets/Flag.png')}}">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="col-1">
@@ -101,7 +110,7 @@
             </div>
             <div class ="row">
                 <div class="col">
-                    <body> bio list blah blah blah </body>   
+                    <body>{{ user.bio }}</body>   
                 </div>       
             </div>
         </div>
@@ -112,4 +121,4 @@
 <footer>
 </footer>
 </html>
-<script src="{{url_for('static',filename='js/userView_script.js')}}"></script>
+<script type="module">import {add_reviews} from "{{url_for('static', filename='js/userView_script.js')}}"; add_reviews("{{ user.id}}");</script>

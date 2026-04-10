@@ -1,0 +1,17 @@
+#editLabel{
+    color: #EFE9FF;
+    text-align: left;
+}
+
+#editProfileStyle{
+    height: 70%;
+    width: 70%;
+    position: center;
+    background: #0F2C52;
+    border: 1px solid #EFE9FF;
+    border-radius: 20px;
+}
+
+.modal-content{
+    background-color: #0F2C52;
+}

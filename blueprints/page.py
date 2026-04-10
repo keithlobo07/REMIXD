@@ -2,6 +2,7 @@ from flask import *
 from app import sql
 from album import album_search_data, album_lookup_data
 from admin import is_admin, admin_review_count
+from user import user_data
 
 pages = Blueprint('pages', __name__)
 
@@ -24,19 +25,9 @@ def signup_page():
     return render_template("signup.html"), 200 # = OK
 
 
-@pages.route("/user")
-def user_page():
-    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
-
-    datas = [data]
-    return render_template("userView.html", datas = datas)
-
-@pages.route("/ownUser")
-def ownUser_page():
-    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
-
-    datas = [data]
-    return render_template("ownUserView.html", datas = datas)
+@pages.route("/user/<userid>")
+def user_page(userid):
+    return render_template("userView.html", user=user_data(userid), ownprofile=int(userid)==session['id'])
 
 
 @pages.route("/album/<albumid>")
