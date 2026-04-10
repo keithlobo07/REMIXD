@@ -75,7 +75,7 @@ def album_view():
   
 @pages.route("/home")
 def home():
-    albums = album_search_data("Riot!")
+    albums = album_search_data(request.args.get("query"))
     print(albums)
     return render_template("allAlbumView.html", albums=albums)
 

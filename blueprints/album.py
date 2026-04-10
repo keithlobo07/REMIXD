@@ -4,7 +4,7 @@ import musicbrainzngs as mb
 albums = Blueprint('albums', __name__)
 
 mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
-mb.set_rate_limit(1)
+mb.set_rate_limit(50)
 
 trimmedData = {}
 
@@ -83,7 +83,7 @@ def albums_reviews(albumid):
         })
 
 def album_search_data(query):
-    responseData = mb.search_release_groups(query) # type: ignore
+    responseData = mb.search_release_groups(query, limit=20) # type: ignore
     searchResults = []
     for elements in responseData['release-group-list']:
         trimmedAlbumData = {
