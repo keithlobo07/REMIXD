@@ -4,12 +4,8 @@ function menuDrop(){
     document.getElementById("myDropdown").classList.toggle("show");
 }
 
-function searchAlbum()
-{
-    console.log("yayay");
-}
 
-document.getElementById("search").addEventListener("search", searchAlbum);
+
 
 window.onclick = function(event){
     if (!event.target.matches('.dropbtn')){
@@ -24,7 +20,7 @@ window.onclick = function(event){
     }
 }
 
-fetch('/api/album/search?query="a"')
+fetch('/api/album/search?query=riot')
     .then(response => {
         if (!response.ok){
             throw new Error('HTTP error - currrent status ${response.status}');       
@@ -35,7 +31,7 @@ fetch('/api/album/search?query="a"')
     .then(data => {
         const container = document.getElementById("albumList");
 
-        data.album.forEach(album => {
+        data.forEach(album => {
             container.appendChild(album_card(album));
         });
 

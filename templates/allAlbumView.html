@@ -121,56 +121,8 @@
                 <div class="row" style="height: auto">
                     <div class="col d-flex flex-column">
                       <div id="albumList"></div>
-                   </div>
-                </div>
-              </div>
-            </div>
-            <p></p>
-            <p></p>
-            <div class="row" style="height: auto">
-              <div class="col d-flex flex-column">
-                <!--CARD NOTE FROM ALBUM VIEW-->
-                {% for album in albums %}
-                <div class="card" id="card">
-                  <div class="card-body">
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-3">
-                          <img
-                            src="{{ album.coverArt }}"
-                            style="
-                              width: clamp(100px, 13vw, 200px);
-                              padding: 5px;
-                            "
-                          />
-                        </div>
-                        <div class="col-9" style="padding-left: 5%">
-                          <!--make link to the album-->
-                          <div class="row">
-                            <div class="col-5">
-                              <h5>{{ album.albumName }}</h5>
-                            </div>
-                            <div class="col-7 text-right">
-                              
-
-                              <div class="starRating">
-                                <div class="starBackground">★★★★★</div>
-                                </div>
-                              </div>
-                              <span>
-                                {{ rating }} ({{ album.numReviews }})</span
-                              >
-                            </div>
-                          </div>
-                          <p>{{ album.artist }}</p>
-                          <p></p>
-                          <p>{{ album.releaseDate }}</p>
-                        </div>
-                      </div>
                     </div>
-                  </div>
                 </div>
-                {% endfor %}
               </div>
             </div>
           </div>
@@ -178,8 +130,12 @@
       </div>
     </div>
 </div>
+  <script type="module" src="/static/js/allAlbumView-java.js"></script>
+  <script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
+  <script type="module">import {add_reviews} from "{{url_for('static', filename='js/userView_script.js')}}"; </script>
 </main>
 <footer>
-  <script type="module" src="/static/js/pages/allAlbumView.js">add_reviews("{{ album.idAlbum }}");</script>
+  <script src="/static/js/allAlbumView-java.js"></script>
   <script src="{{url_for('static',filename='js/allAlbumView-java.js')}}"></script>
+  <script type="module">import {add_reviews} from "{{url_for('static', filename='js/userView_script.js')}}"; </script>
 </footer>
