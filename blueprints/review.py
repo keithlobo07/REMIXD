@@ -19,8 +19,8 @@ def review_data(userid, albumid):
             return None
 
         return {
-            "accountID":data[0],
-            "albumID":data[1],
+            "id":data[0],
+            "albumid":data[1],
             "name":data[9],
             "timestamp":data[2],
             "score":data[3],
@@ -40,8 +40,8 @@ def review_data(userid, albumid):
             return None
 
         return {
-            "accountID":data[0],
-            "albumID":data[1],
+            "id":data[0],
+            "albumid":data[1],
             "name":data[7],
             "timestamp":data[2],
             "score":data[3],

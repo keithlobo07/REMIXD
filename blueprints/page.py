@@ -1,7 +1,7 @@
 from flask import *
 from app import sql
 from album import album_search_data, album_lookup_data
-from admin import is_admin
+from admin import is_admin, admin_review_count
 
 pages = Blueprint('pages', __name__)
 
@@ -54,4 +54,5 @@ def home():
 def admin_page():
     if not is_admin():
         return {"message":"Insufficient permissions."}, 401 # = Unauthorized
-    return render_template("adminDashboard.html"), 200
+    print(admin_review_count())
+    return render_template("adminDashboard.html", toReview=admin_review_count()), 200

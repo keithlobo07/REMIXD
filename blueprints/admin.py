@@ -22,13 +22,19 @@ def is_admin():
 @admins.route("/api/admin/reviews")
 def admin_review_search():
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT *, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 64) AS Reports, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review ORDER BY Reports DESC LIMIT 5;")
+    cursor.execute("SELECT *, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 64) AS Reports, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, (SELECT Name FROM Account WHERE ID=Review.AccountID) FROM Review WHERE (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 64) >0 ORDER BY Reports DESC LIMIT 5;")
     results = cursor.fetchall()
     cursor.close()
 
     return jsonify({
-        "reviews":[{"accountID":x[0], "albumID":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "reports":x[6], "likes":x[7]} for x in results]
+        "reviews":[{"id":x[0], "albumID":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "reports":x[6], "likes":x[7], "name":x[8], "is_admin":True} for x in results]
     })
+
+def admin_review_count():
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT ReviewAccountID, ReviewAlbumID, COUNT(*) as Reports FROM Tags WHERE ((info & 64) = 64) GROUP BY ReviewAccountID, ReviewAlbumID ORDER BY Reports DESC LIMIT 5;")
+    cursor.close()
+    return cursor.rowcount
 
 @admins.route("/api/admin/users")
 def admin_user_search():
@@ -50,7 +56,7 @@ def admin_stats():
     cursor.close()
 
     return jsonify({
-        "data":results
+        "data":list(reversed(results))
     })
 
 @admins.route("/api/admin/ban/<userid>")

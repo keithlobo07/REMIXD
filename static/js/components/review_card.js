@@ -1,6 +1,6 @@
 export function review_card(review) {
     const card = document.createElement("div");
-    card.className = "card container-fluid";
+    card.className = "review-card container-fluid";
     card.id = review.id;
     card.innerHTML =`<div class="card-body">
                         <div class = "container">
@@ -31,7 +31,8 @@ export function review_card(review) {
                         </div>
                     </div>`
     
-    card.querySelector(`#flag-${review.id}`).addEventListener("mousedown", function(){flag_review(review.albumid, review.id)})
+    if (review.user_report !== undefined) card.querySelector(`#flag-${review.id}`).addEventListener("mousedown", function(){flag_review(review.albumid, review.id)});
+
 
     return card
 }
