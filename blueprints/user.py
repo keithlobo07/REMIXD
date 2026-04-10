@@ -8,10 +8,17 @@ def is_banned():
     if not 'id' in session:
         return False
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT modTags FROM Account WHERE ID = %s;" %(session['id']))
+    cursor.execute("SELECT modFlags FROM Account WHERE ID = %s;" %(session['id']))
     result = cursor.fetchone()[0]
     cursor.close()
-    return bool(result & 1) # banned users have modtags = 0b00000001
+    return bool(result[0] & 0b1) # banned users have modtags = 0b00000001
+
+def login_type():
+    if not 'id' in session:
+        return 0
+    if not is_admin():
+        return 1
+    return 2
 
 def user_data(userid):
     cursor = sql.get_db().cursor()

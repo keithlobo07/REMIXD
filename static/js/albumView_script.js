@@ -11,34 +11,3 @@ export function add_reviews(albumid) {
             });
         })
 }
-
-
-fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
-    .then(response => {
-        if (!response.ok){
-            throw new Error('HTTP error - currrent status ${response.status}');       
-        }
-        return response.json();
-    })
-    .then(data => {
-        document.getElementById("albumTitle").innerText = data.albumName;
-        document.getElementById("albumCover").src = data.coverArt;
-        document.getElementById("albumRelease").innerText = data.releaseDate;
-        document.getElementById("albumArtist").innerText = data.artist;
-        document.getElementById("albumRating").innerText = data.avgRating;
-        document.getElementById("albumRatingNo").innerText = data.numReviews;
-
-        //for the stars
-        const rating = parseFloat(data.avgRating);
-        const percent = (rating/5) * 100;
-
-        document.getElementById("filledStars").style.width = "60%";
-
-        //for the tracklist
-        const list = document.getElementById("tracklist");
-        list.innerHTML = TextTrackList.map(track => '<li>${track}</li>').join("");
-    })
-    .catch(error => {
-        console.error('Error fetching data', error);
-        alert('failed to gather data, please try again later')
-    });

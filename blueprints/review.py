@@ -69,10 +69,20 @@ def post_review():
 
     album_id, score, content = request.form['album_id'], request.form['score'], request.form['content']
 
-    # finish when bethany finishes review page
+
+
+    if album_id == None or score == None or content == None:
+        return {"message": "Missing data."}, 400
+
+    cursor = sql.get_db().cursor()
+    cursor.execute("INSERT INTO Review (AccountID, AlbumID, Score, Liked, Content) VALUES (%s, %s, %s, 0, %s)", (session['id'], album_id, score, content))
+    sql.get_db().commit()
+
+    return {"message":"Review added."}, 200
+
 
 @reviews.put("/api/review/<userid>/<albumid>")
-def update_review(account_id, album_id):
+def update_review(userid, albumid):
     if not 'id' in session:
         return {"message": "Not logged in."}, 400
 
@@ -81,36 +91,39 @@ def update_review(account_id, album_id):
 
     score, content = request.form['score'], request.form['content']
 
+    if score == None or content == None:
+        return {"message": "Incomplete form."}, 400
+
     cursor = sql.get_db().cursor()
 
-    cursor.execute("SELECT * FROM Review WHERE AccountID = %s AND AlbumID = %s", (account_id, album_id))
+    cursor.execute("SELECT * FROM Review WHERE AccountID = %s AND AlbumID = %s", (userid, albumid))
     res = cursor.fetchone()
     if res == None:
-        return {"message": "No review found by user with ID %s for album with ID %s." %(account_id, album_id)}, 404
+        return {"message": "No review found by user with ID %s for album with ID %s." %(userid, albumid)}, 404
     
     if session['id'] == res[0] or is_admin():
         cursor.execute("UPDATE Review SET Score=%s, Content=%s WHERE ID = %s;", (score, content, session['id']))
         sql.get_db().commit()
         cursor.close()
-        return jsonify(review_data(account_id, album_id)), 200
+        return jsonify(review_data(userid, albumid)), 200
 
     # finish when bethany finishes review page
 
 @reviews.delete("/api/review/<userid>/<albumid>")
-def delete_review(account_id, album_id):
-    if session['id'] != int(account_id) and not is_admin():
+def delete_review(userid, albumid):
+    if session['id'] != int(userid) and not is_admin():
         return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()
-    cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (account_id, album_id))
-    cursor.execute("DELETE FROM Tags WHERE ReviewAccountID = %s AND ReivewAlbumID = %s;", (account_id, album_id))
+    cursor.execute("DELETE FROM Tags WHERE ReviewAccountID = %s AND ReviewAlbumID = %s;", (userid, albumid))
+    cursor.execute("DELETE FROM Review WHERE AccountID = %s AND AlbumID = %s;", (userid, albumid))
     sql.get_db().commit()
     if cursor.rowcount > 0:
         cursor.close()
-        return {"message": "Review by user with ID %s for album with ID %s deleted." %(account_id, album_id)}, 200 # = OK
+        return {"message": "Review by user with ID %s for album with ID %s deleted." %(userid, albumid)}, 200 # = OK
     else:
         cursor.close()
-        return {"message": "No review found by user with ID %s for album with ID %s." %(account_id, album_id)}, 404 # = Not Found
+        return {"message": "No review found by user with ID %s for album with ID %s." %(userid, albumid)}, 404 # = Not Found
 
 @reviews.post("/api/review/<userid>/<albumid>/tags")
 def update_review_tags(userid, albumid):
@@ -130,3 +143,14 @@ def update_review_tags(userid, albumid):
     sql.get_db().commit()
     cursor.close()
     return {"message": "Tags updated."}, 200 # = OK
+
+def recent_reviews_data():
+    cursor = sql.get_db().cursor()
+    cursor.execute("SELECT * FROM Review GROUP BY AlbumID ORDER BY timestamp DESC LIMIT 5;")
+    results = cursor.fetchall()
+
+    return [{"accountid":x[0], "albumid":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5]} for x in results]
+
+@reviews.get("/api/review/recent")
+def recent_reviews():
+    return jsonify({"reviews":recent_reviews_data()})

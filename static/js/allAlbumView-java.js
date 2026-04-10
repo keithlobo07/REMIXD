@@ -22,6 +22,7 @@ window.onclick = function(event){
     }
 }
 
+/*
 fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
     .then(response => {
         if (!response.ok){
@@ -46,5 +47,5 @@ fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
     })
     .catch(error => {
         console.error('Error fetching data', error);
-        alert('failed to gather data, please try again later')
     });
+*/

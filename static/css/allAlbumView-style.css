@@ -63,6 +63,7 @@ select {
 #sidebar {
   /* sidebar */
   background-image: linear-gradient(to bottom, #002657, #001143);
+  height: 100%;
 }
 
 #search {

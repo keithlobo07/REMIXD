@@ -10,21 +10,12 @@
     <div class="container">
     <div class="row">
         <div class="col-2">
-            <a href="{{ url_for('pages.lander') }}"></a>
-            <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
+            <a href="{{ url_for('pages.lander') }}">
+                <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
             </a>
         </div>
         <div class="col-9">
             <h2></h2>
-        </div>
-        <div class="col-1">
-            <div class="dropdown" style="margin-top: 15px;">
-                <button onclick="menuDrop()" class="dropbtn" style="width: 40px; height: 40px;"></button>
-                <div id="myDropdown" class="menuContent">
-                    <a href="{{ url_for('pages.login_page') }}">Login</a>
-                    <a href="{{ url_for('pages.signup_page') }}">Sign Up</a>
-                </div>
-            </div>
         </div>
     </div>
 </div>
@@ -34,6 +25,7 @@
 
 <!--Left hand col (return & image)-->
 <div class="container">
+    <a href="{{ url_for('pages.home') }}">
     <div class="row">
         <div class="col-2">
             <img src="{{url_for('static', filename='assets/arrow-left.png')}}" alt="left arrow" class="img-fluid" style="max-width:20px">
@@ -42,6 +34,7 @@
             <h6> RETURN TO SEARCH </h6>
         </div>
     </div>
+    </a>
 
     {% if ownprofile %}
     <div class="row">
@@ -130,3 +123,4 @@
 </footer>
 </html>
 <script type="module">import {add_reviews} from "{{url_for('static', filename='js/userView_script.js')}}"; add_reviews("{{ user.id}}");</script>
+<script src="{{url_for('static',filename='js/menu_script.js')}}"></script>

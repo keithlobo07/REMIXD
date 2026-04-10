@@ -12,7 +12,7 @@ function loadAnalytics() {
             const ctx = document.getElementById('analytics_chart');
 
         const chartData = {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            labels: ["11", "10", "9", "8", "7", "6", "5", "4", "3", "2", "1", "0"],
             datasets: [{
                 backgroundColor: "rgba(210, 252, 255, 0.2)",
                 borderColor: "rgba(210, 252, 255, 1)",
