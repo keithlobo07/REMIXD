@@ -1,11 +1,9 @@
-
-
-#addRevB{
+#editLabel{
     color: #EFE9FF;
     text-align: left;
 }
 
-#addRevStyle{
+#editProfileStyle{
     height: 70%;
     width: 70%;
     position: center;
@@ -16,9 +14,4 @@
 
 .modal-content{
     background-color: #0F2C52;
-}
-
-#review_section {
-    height: 458.4px;
-    overflow-y: scroll;
 }

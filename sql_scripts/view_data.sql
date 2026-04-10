@@ -1,8 +1,9 @@
 USE `remixd`;
 
-SELECT * FROM Account;
-SELECT * FROM Review;
+#SELECT * FROM Account;
+#SELECT * FROM Review;
 SELECT * FROM Tags;
+SELECT ReviewAccountID, ReviewAlbumID, COUNT(*) as Reports FROM Tags WHERE ((info & 64) = 64) GROUP BY ReviewAccountID, ReviewAlbumID ORDER BY Reports DESC LIMIT 5;
 #SELECT IF(info & 128 = 128, True, False) FROM Tags;
 #SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE AlbumID=2130752 ORDER BY Review.timestamp DESC LIMIT 3;
 
@@ -15,4 +16,4 @@ SELECT * FROM Tags;
 
 #SELECT * FROM Tags;
 
-SELECT 1 FROM Tags WHERE AccountID = 1 AND ReviewAccountID = 1 AND ReviewAlbumID = 2130752;
+#SELECT 1 FROM Tags #WHERE AccountID = 1 AND ReviewAccountID = 1 AND ReviewAlbumID = 2130752;

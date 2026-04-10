@@ -22,7 +22,7 @@
                     <img src="{{ url_for('static', filename='assets/remixd blue.png') }}" alt="REMIXD Logo" class="img-fluid" style="max-width: 80px;">
                 </div>
                 <div class="col ms-sm-3 align-self-center">
-                    <h5>REMIXD</h5>
+                    <h4>REMIXD</h4>
                 </div>
             </div>
         </div>
@@ -35,8 +35,9 @@
             <div class="row column-gap-5 justify-content-center">
                 <div class="col-5 my-5" id="review">
                     <div class="row">
-                        <h3><span class="badge rounded-pill" id="reviewNo">({toReview})</span>&ensp;To review:</h3>
+                        <h3><span class="badge rounded-pill" id="reviewNo">({{ toReview }})</span>&ensp;To review:</h3>
                     </div>
+                    <div class="row" id="review_section"></div>
                     
                 </div>
                 <div class="col-5 my-5" id="analytics">
@@ -56,6 +57,6 @@
         <!-- Chart.js -->
         <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
         <!-- Admin Dashboard Script -->
-        <script src="{{ url_for('static', filename='js/adminDashboard_script.js') }}"></script>
+        <script type="module" src="{{ url_for('static', filename='js/adminDashboard_script.js') }}"></script>
     </body>
 </html>

@@ -5,6 +5,9 @@ from urllib import response
 from flask import *
 from flaskext.mysql import MySQL
 from argon2 import PasswordHasher
+import sys
+
+sys.path.insert(1, "./blueprints")
 
 
 app = Flask(__name__)
