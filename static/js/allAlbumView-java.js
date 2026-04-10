@@ -20,6 +20,7 @@ fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
         if (!response.ok){
             throw new Error('HTTP error - currrent status ${response.status}');       
         }
+        console.log("yippe")
         return response.json();
     })
     .then(data => {

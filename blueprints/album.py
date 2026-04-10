@@ -1,36 +1,43 @@
 from flask import *
-from app import sql
+#from app import sql
 from admin import is_admin
-
+import musicbrainzngs as mb
 albums = Blueprint('albums', __name__)
 
+mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
+mb.set_rate_limit(1)
+
+trimmedData = {}
+
 def album_lookup_data(albumid):
-    return {
-        "idAlbum":"11755c21-2546-4cb3-9b87-392f4f3c2fa2",
-        "strAlbum":"good kid, m.A.A.d city",
-        "strArtist":"Kendrick Lamar",
-        "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
-        "intYearReleased":"2012",
-        "strGenre":"Hip-Hop",
-        "avgRating":"4.23",
-        "numReviews":"46071",
-        "tracklist":[
-            "Sherane a.k.a. Master Splinter's Daughter",
-            "Bitch, Don't Kill My Vibe",
-            "Backseat Freestyle",
-            "The Art of Peer Pressure",
-            "Money Trees",
-            "Poetic Justice",
-            "good kid",
-            "m.A.A.d city",
-            "Swimming Pools (Drank) (extended version)",
-            "Sing About Me, I'm Dying of Thirst",
-            "Real",
-            "Compton",
-            "The Recipe",
-            "Black Boy Fly",
-            "Now or Never"
-        ]}
+    #release group - d706457-8b16-4809-a61a-cdba1b281d39 - brand new eyes paramore
+    #release 11755c21-2546-4cb3-9b87-392f4f3c2fa2 - ten the story - twice
+
+    response = mb.get_release_by_id(albumid, includes=["recordings", "artists", "tags"])
+    responseData = response['release']
+
+    trackListData = responseData['medium-list'][0]['track-list']
+    trimmedTrackList = []
+    for elements in trackListData:
+        trackData = {
+            "trackNumber":elements["number"],
+            "name":elements["recording"]["title"],
+            "length":elements["recording"]["length"]
+        }
+        trimmedTrackList.append(trackData)
+
+    trimmedData = {
+        "idAlbum" : responseData['id'],
+        "albumName" : responseData["title"],
+        "artist" : responseData["artist-credit-phrase"],
+        "releaseDate" : responseData["date"],
+        "coverArt" : mb.get_image_list(albumid)['images'][00]['image'],
+        "trackList":trimmedTrackList
+    }
+
+    return trimmedData
+
+
 
 @albums.get("/api/album/<albumid>")
 def album_lookup(albumid):
@@ -79,23 +86,24 @@ def albums_reviews(albumid):
         })
 
 def album_search_data(query):
-    return {
-        "albums":[
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"},
-            {"id":"2130752", "strAlbum":"good kid, m.A.A.d city", "strArtist":"Kendrick Lamar", "albumArt":"https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg", "intYearReleased":"2012", "avgRating":"4.23","numReviews":"46071"}   
-        ]
-    }
+    responseData = mb.search_release_groups(query) # type: ignore
+    searchResults = []
+    for elements in responseData['release-group-list']:
+        trimmedAlbumData = {
+            "idAlbum" : elements['id'],
+            "albumName" : elements["title"],
+            "artist" : elements["artist-credit-phrase"],
+            "releaseDate" : elements["first-release-date"]
+        }
+        searchResults.append(trimmedAlbumData)
+
+    return searchResults
 
 @albums.route("/api/album/search")
 def album_search():
-    query = request.args.get("query")
+    query = request.args.get("query", type=str)
     if query == None:
         return {"message": "No query phrase provided."}, 400 # = Bad Request
-
-    query = " "
 
     data = album_search_data(query)
 

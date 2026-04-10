@@ -176,8 +176,7 @@
                               <h5>{{ album.strAlbum }}</h5>
                             </div>
                             <div class="col-7 text-right">
-                              {% set rating = album.avgRating|float %} {% set
-                              percent = (rating/5) * 100 %}
+                              
 
                               <div class="starRating">
                                 <div class="starBackground">★★★★★</div>
@@ -188,9 +187,9 @@
                                   ★★★★★
                                 </div>
                               </div>
-                              <span>
+                              <!-- <span>
                                 {{ rating }} ({{ album.numReviews }})</span
-                              >
+                              > -->
                             </div>
                           </div>
                           <p>{{ album.strArtist }}</p>
