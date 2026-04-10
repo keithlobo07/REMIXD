@@ -6,8 +6,7 @@ export function review_card(review) {
                         <div class = "container">
                             <div class="row">
                                 <div class="col-5">
-                                    <!--make link to the usernames profile-->
-                                    <!--CHANGE TO USERNAME!!-->
+                                    <!--user profile-->
                                     <a href="/user/${review.id}"><h5>${review.name}</h5></a>
                                 </div>
                                 <div class="col-5 text-right">

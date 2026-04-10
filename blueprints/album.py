@@ -34,9 +34,9 @@ def album_lookup_data(albumid):
         "trackList":trimmedTrackList
     }
 
-    #review_info = album_review_info(albumid)
-    #trimmedData['numReviews'] = review_info['numReviews']
-    #trimmedData['avgScore'] = review_info['avgScore']
+    review_info = album_review_info(albumid)
+    trimmedData['numReviews'] = review_info['numReviews']
+    trimmedData['avgScore'] = review_info['avgScore']
 
     return trimmedData
 
