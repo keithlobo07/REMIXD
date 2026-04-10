@@ -34,9 +34,9 @@ def album_lookup_data(albumid):
         "trackList":trimmedTrackList
     }
 
-    #review_info = album_review_info(albumid)
-    #trimmedData['numReviews'] = review_info['numReviews']
-    #trimmedData['avgScore'] = review_info['avgScore']
+    review_info = album_review_info(albumid)
+    trimmedData['numReviews'] = review_info['numReviews']
+    trimmedData['avgScore'] = review_info['avgScore']
 
     return trimmedData
 
@@ -99,7 +99,6 @@ def album_search_data(query):
             "releaseDate" : elements["first-release-date"]
         }
         searchResults.append(trimmedAlbumData)
-
     return searchResults
 
 @albums.route("/api/album/search")
@@ -109,7 +108,6 @@ def album_search():
         return {"message": "No query phrase provided."}, 400 # = Bad Request
 
     data = album_search_data(query)
-
     if data == None:
         return {"message":"Album search returned no data."}, 404 # = Not Found
     return jsonify(data), 200
