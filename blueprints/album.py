@@ -5,7 +5,7 @@ import musicbrainzngs as mb
 albums = Blueprint('albums', __name__)
 
 mb.set_useragent("REMIXD", "0.8", "2644463@dundee.ac.uk")
-mb.set_rate_limit(50)
+mb.set_rate_limit(1)
 
 
 def album_lookup_data(albumid):
@@ -52,7 +52,7 @@ def album_lookup(albumid):
 def album_review_info(albumid):
     cursor = sql.get_db().cursor()
     cursor.execute("SELECT COUNT(*), AVG(Score) FROM Review WHERE AlbumID = %s;", albumid)
-    reviews, avg_score = cursor.fetchone()[0]
+    reviews, avg_score = cursor.fetchone()
     cursor.close()
 
     return {"numReviews":reviews, "avgScore":avg_score}

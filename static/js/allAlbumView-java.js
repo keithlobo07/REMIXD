@@ -2,6 +2,13 @@ function menuDrop(){
     document.getElementById("myDropdown").classList.toggle("show");
 }
 
+function searchAlbum()
+{
+    console.log("yayay");
+}
+
+document.getElementById("search").addEventListener("search", searchAlbum());
+
 window.onclick = function(event){
     if (!event.target.matches('.dropbtn')){
         var dropdowns=this.document.getElementsByClassName("dropdown-content");
