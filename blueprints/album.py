@@ -35,8 +35,8 @@ def album_lookup_data(albumid):
     }
 
     review_info = album_review_info(albumid)
-    trimmedData['numReviews'] = review_info['numReviews']
-    trimmedData['avgScore'] = review_info['avgScore']
+    #trimmedData['numReviews'] = review_info['numReviews']
+    #trimmedData['avgScore'] = review_info['avgScore']
 
     return trimmedData
 
