@@ -12,7 +12,7 @@
  
 
 
-<main>
+<body>
 <!--logo/name-->
 <div class="container">
     <div class="row">
@@ -197,9 +197,12 @@
 
 <div style="height:10%">
 </div>
-</main>
+</body>
 <footer>
 </footer>
 
-<script type="module">import {add_reviews} from "{{url_for('static', filename='js/albumView_script.js')}}"; add_reviews("{{ album.idAlbum}}");</script>
+<script type="module" src="{{ url_for('static', filename='js/albumView_script.js')}}"></script>
+<!-- <script type="module">import {add_reviews} from "{{url_for('static', filename='js/albumView_script.js')}}"; add_reviews("{{ album.idAlbum}}");</script> -->
 <script src="{{url_for('static',filename='js/menu_script.js')}}"></script>
+
+</HTML>
