@@ -17,14 +17,24 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
+            <a href="{{ url_for('pages.lander') }}">
             <img src="{{url_for('static', filename='assets/remixd blue.png')}}" id="logo" alt="REMIXD Logo" class="img-fluid" style="max-width: 40px">
+            </a>
         </div>
         <div class="col-9">
             <h2></h2>
         </div>
         <div class = "col-1">
-            <img src="{{url_for('static', filename='assets/account_circle.png')}}" alt="account image" class="img-fluid" style="max-width: 40px">
+            <div class="dropdown" style="margin-top: 15px;">
+                <button onclick="menuDrop()" class="dropbtn" style="width: 40px; height: 40px;"></button>
+                <div id="myDropdown" class="menuContent">
+                    <a href="{{ url_for('pages.login_page') }}">Login</a>
+                    <a href="{{ url_for('pages.signup_page') }}">Sign Up</a>
+                    <a href="{{ url_for('pages.ownUserView_page')}}">View own profile</a>
+                </div>
+            </div>
         </div>
+    </div>
 </div>
 
 <p>
