@@ -1,12 +1,16 @@
-console.log("JS is running");
+import {review_card} from "./components/review_card.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM is ready");
+export function add_reviews(albumid) {
+    review_section = document.getElementById("review_section")
 
-    const el = document.getElementById("reviewContent");
-    console.log("reviewContent element:", el);
-});
-
+    fetch(`/api/album/${albumid}/reviews`).then(response => {
+        return response.json()}).then(data => {
+            let reviews = data.reviews;
+            reviews.forEach(review => {                
+                review_section.appendChild(review_card(review))
+            });
+        })
+}
 
 
 fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
@@ -33,25 +37,6 @@ fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2')
         //for the tracklist
         const list = document.getElementById("tracklist");
         list.innerHTML = TextTrackList.map(track => '<li>${track}</li>').join("");
-    })
-    .catch(error => {
-        console.error('Error fetching data', error);
-        alert('failed to gather data, please try again later')
-    });
-
-fetch('/api/album/11755c21-2546-4cb3-9b87-392f4f3c2fa2/reviews')
-    .then(response => {
-        if (!response.ok){
-            throw new Error(`HTTP error - currrent status ${response.status}`);       
-        }
-        return response.json();
-    })
-    .then(data => {
-        const review = data.reviews[0];
-
-        document.getElementById("reviewContent").innerHTML = review.content;
-        document.getElementById("username").innerText = review.name;
-        document.getElementById("userRating").innerText = review.score
     })
     .catch(error => {
         console.error('Error fetching data', error);

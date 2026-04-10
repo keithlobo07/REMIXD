@@ -1,7 +1,8 @@
 from flask import *
 from app import sql
-from blueprints.album import album_search_data
-from blueprints.admin import is_admin
+from album import album_search_data, album_lookup_data
+from admin import is_admin, admin_review_count
+from user import user_data
 
 pages = Blueprint('pages', __name__)
 
@@ -24,54 +25,15 @@ def signup_page():
     return render_template("signup.html"), 200 # = OK
 
 
-@pages.route("/user")
-def user_page():
-    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
-
-    datas = [data]
-    return render_template("userView.html", datas = datas)
-
-@pages.route("/ownUser")
-def ownUser_page():
-    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
-
-    datas = [data]
-    return render_template("ownUserView.html", datas = datas)
+@pages.route("/user/<userid>")
+def user_page(userid):
+    return render_template("userView.html", user=user_data(userid), ownprofile=int(userid)==session['id'])
 
 
-@pages.route("/albumView")
-def album_view():
-    album = {
-        "albumArt": "https://r2.theaudiodb.com/images/media/album/thumb/good-kid-maad-city-507f66df92d44.jpg",
-        "avgRating": "4.23",
-        "idAlbum": "2130752",
-        "intYearReleased": "2012",
-        "numReviews":    "46071",
-        "strAlbum": "good kid, m.A.A.d city",
-        "strArtist": "Kendrick Lamar",
-        "strGenre": "Hip-Hop",
-        "tracklist": [
-        "Sherane a.k.a. Master Splinter's Daughter",
-        "Bitch, Don't Kill My Vibe",
-        "Backseat Freestyle",
-        "The Art of Peer Pressure",
-        "Money Trees",
-        "Poetic Justice",
-        "good kid",
-        "m.A.A.d city",
-        "Swimming Pools (Drank) (extended version)",
-        "Sing About Me, I'm Dying of Thirst",
-        "Real",
-        "Compton",
-        "The Recipe",
-        "Black Boy Fly",
-        "Now or Never"
-        ]}
-    data = {"accountID":1,"albumID":2130752,"content":"still only like the third best kendrick lamar album lol","liked":1,"numLikes":0,"score":10,"timestamp":"Tue, 07 Apr 2026 14:39:47 GMT","user_liked":0,"user_report":0}
-
-    albums = [album]
-    datas = [data]
-    return render_template("albumView.html", albums = albums, datas = datas)
+@pages.route("/album/<albumid>")
+def album_view(albumid):
+    album = album_lookup_data(albumid)
+    return render_template("albumView.html", album = album)
   
 @pages.route("/home")
 def home():
@@ -83,4 +45,5 @@ def home():
 def admin_page():
     if not is_admin():
         return {"message":"Insufficient permissions."}, 401 # = Unauthorized
-    return render_template("adminDashboard.html"), 200
+    print(admin_review_count())
+    return render_template("adminDashboard.html", toReview=admin_review_count()), 200

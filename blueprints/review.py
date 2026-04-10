@@ -8,6 +8,8 @@ reviews = Blueprint('reviews', __name__)
 def review_data(userid, albumid):
     cursor = sql.get_db().cursor()
 
+    a = is_admin()
+
     if 'id' in session:
         cursor.execute("SELECT Review.AccountID, Review.AlbumID, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, IFNULL(Tags.info & 128 = 128, 0) as user_like, IFNULL(Tags.info & 64 = 64, 0) as user_report, (SELECT Account.Name From Account WHERE ID=Review.AccountID) as author FROM Review LEFT JOIN Tags ON Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.AccountID = %s WHERE Review.AccountID=%s AND AlbumID=%s;", (session['id'], userid, albumid))
         data = cursor.fetchone()
@@ -17,16 +19,18 @@ def review_data(userid, albumid):
             return None
 
         return {
-            "accountID":data[0],
-            "albumID":data[1],
-            "author":data[9],
+            "id":data[0],
+            "albumid":data[1],
+            "name":data[9],
             "timestamp":data[2],
             "score":data[3],
             "liked":data[4],
             "content":data[5],
             "numLikes":data[6],
             "user_liked":data[7],
-            "user_report":data[8]
+            "user_report":data[8],
+            "is_admin":a,
+            "is_own":int(int(userid) == session['id'])
         }
     else:
         cursor.execute("SELECT AccountID, AlbumID, timestamp, Score, Liked, Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, (SELECT Account.Name From Account WHERE ID=Review.AccountID) as author FROM Review WHERE AccountID=%s AND AlbumID=%s;", (userid, albumid))
@@ -37,14 +41,15 @@ def review_data(userid, albumid):
             return None
 
         return {
-            "accountID":data[0],
-            "albumID":data[1],
-            "author":data[7],
+            "id":data[0],
+            "albumid":data[1],
+            "name":data[7],
             "timestamp":data[2],
             "score":data[3],
             "liked":data[4],
             "content":data[5],
-            "numLikes":data[6]
+            "numLikes":data[6],
+            "is_admin":a
         }
 
 @reviews.get("/api/review/<userid>/<albumid>")
@@ -93,7 +98,7 @@ def update_review(account_id, album_id):
 
 @reviews.delete("/api/review/<userid>/<albumid>")
 def delete_review(account_id, album_id):
-    if session['id'] != account_id and not is_admin():
+    if session['id'] != int(account_id) and not is_admin():
         return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()
@@ -112,14 +117,15 @@ def update_review_tags(userid, albumid):
     if not 'id' in session:
         return {"message": "Not logged in"}, 400 # = Bad Request
     
-    tags, review_account_id, review_album_id = request.form['tags'], request.form['review_account_id'], request.form['review_album_id']
+    tags = request.form['tags']
+
     cursor = sql.get_db().cursor()
-    cursor.execute("SELECT 1 FROM Tags WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (session['id'], review_account_id, review_album_id))
+    cursor.execute("SELECT 1 FROM Tags WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (session['id'], userid, albumid))
     
     if cursor.rowcount == 0:
-        cursor.execute("INSERT INTO Tags (AccountID, ReviewAccountID, ReviewAlbumID, info) VALUES (%s, %s, %s, %s)", (session['id'], review_account_id, review_album_id, tags))
+        cursor.execute("INSERT INTO Tags (AccountID, ReviewAccountID, ReviewAlbumID, info) VALUES (%s, %s, %s, %s)", (session['id'], userid, albumid, tags))
     else:
-        cursor.execute("UPDATE Tags SET Tags = %s WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (tags, session['id'], review_account_id, review_album_id))
+        cursor.execute("UPDATE Tags SET info = %s WHERE AccountID = %s AND ReviewAccountID = %s AND ReviewAlbumID = %s;", (tags, session['id'], userid, albumid))
         
     sql.get_db().commit()
     cursor.close()

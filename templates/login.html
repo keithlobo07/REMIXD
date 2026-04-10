@@ -41,7 +41,7 @@
     >
       <div class="row">
         <div class="col" id="logoCol">
-          <a class="a-logo" href="{{ url_for('lander') }}">
+          <a class="a-logo" href="{{ url_for('pages.lander') }}">
             <img
               src="{{ url_for('static', filename='assets/remixd blue.png')}}"
               alt="REMIXD Logo"
@@ -51,7 +51,7 @@
           </a>
         </div>
         <div class="col ms-sm-3 align-self-center">
-          <a class="a-logo" href="{{ url_for('lander') }}">
+          <a class="a-logo" href="{{ url_for('pages.lander') }}">
             <h5>REMIXD</h5>
           </a>
         </div>
@@ -71,7 +71,7 @@
             id="loginForm"
             name="loginForm"
             method="POST"
-            action="{{ url_for('authenticate') }}"
+            action="{{ url_for('utils.authenticate') }}"
           >
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
@@ -99,7 +99,7 @@
           <button
             type="submit"
             class="btn"
-            onClick="returnLoginInfo('{{ url_for('authenticate') }}', '{{ url_for('home') }}')"
+            onClick="returnLoginInfo('{{ url_for('utils.authenticate') }}', '{{ url_for('pages.home') }}')"
             ;
             id="submitbutton"
           >

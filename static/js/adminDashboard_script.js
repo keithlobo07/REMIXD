@@ -1,74 +1,87 @@
-function getReviewCount() {
-    // To be implemented: fetch the number of reviews that need to be done and update the badge
-    
-    // Placeholder:
-    const reviewCount = 5; // Replace with actual count from backend
-    document.getElementById('reviewNo').textContent = `(${reviewCount})`;
-}
-
-// Call the function to get the review count when the page loads
-window.onload = getReviewCount();
-
 function loadAnalytics() {
-    
 
-    const ctx = document.getElementById('analytics_chart');
+    fetch("/api/admin/statistics").then(response => {
+        return response.json()
 
-    const chartData = {
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        datasets: [{
-            backgroundColor: "rgba(210, 252, 255, 0.2)",
-            borderColor: "rgba(210, 252, 255, 1)",
-            data: [12, 19, 3, 5, 2, 3, 7, 8, 6, 4, 9, 10], // Placeholder data - replace with actual data from backend
-            borderWidth: 1,
-            borderRadius: 5
-        }]
-    }
-
-    Chart.defaults.style = "bold";
-    Chart.defaults.color = "#EFE9FF";
-    Chart.defaults.font.family = "DM Sans, sans-serif";
-    Chart.defaults.plugins.tooltip.titleFont.size = 16;
-    Chart.defaults.plugins.tooltip.backgroundColor = "#1d4376";
-
-    new Chart(ctx, {
-        type: "bar",
-        data: chartData,
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: "#EFE9FF",
-                        font: {family: "DM Sans, sans-serif", size: 14},
-                        stepSize: 10 // Adjust step size as needed from backend data range
-                    }
-                }
-            },
-            plugins: {
-                legend: { display: false},
-                title: {
-                    display: true,
-                    text: "Reviews in the Past 12 Months",
-                    color: "#EFE9FF",
-                    font: {
-                        family: "DM Sans, sans-serif",
-                        size: 25}
-                },
-                tooltip: {
-                    titleFont: {
-                        family: "DM Sans, sans-serif",
-                        size: 14
-                    }
-                }
-            },
-            responsive: true,
-            maintainAspectRatio: false
+    }).then(data => {
+        let graph_data = data.data;
+        if (graph_data === undefined) {
+            throw Error("Graph data retrieval failed.");
         }
-    });
+
+            const ctx = document.getElementById('analytics_chart');
+
+        const chartData = {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                backgroundColor: "rgba(210, 252, 255, 0.2)",
+                borderColor: "rgba(210, 252, 255, 1)",
+                data: graph_data, // Placeholder data - replace with actual data from backend
+                borderWidth: 1,
+                borderRadius: 5
+            }]
+        }
+
+        Chart.defaults.style = "bold";
+        Chart.defaults.color = "#EFE9FF";
+        Chart.defaults.font.family = "DM Sans, sans-serif";
+        Chart.defaults.plugins.tooltip.titleFont.size = 16;
+        Chart.defaults.plugins.tooltip.backgroundColor = "#1d4376";
+
+        new Chart(ctx, {
+            type: "bar",
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "#EFE9FF",
+                            font: {family: "DM Sans, sans-serif", size: 14},
+                            stepSize: 10 // Adjust step size as needed from backend data range
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false},
+                    title: {
+                        display: true,
+                        text: "Reviews in the Past 12 Months",
+                        color: "#EFE9FF",
+                        font: {
+                            family: "DM Sans, sans-serif",
+                            size: 25}
+                    },
+                    tooltip: {
+                        titleFont: {
+                            family: "DM Sans, sans-serif",
+                            size: 14
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
 
 
+    })
 }
+
+import {review_card} from "./components/review_card.js";
+
+export function add_reviews(albumid) {
+    review_section = document.getElementById("review_section")
+
+    fetch(`/api/admin/reviews`).then(response => {
+        return response.json()}).then(data => {
+            let reviews = data.reviews;
+            reviews.forEach(review => {                
+                review_section.appendChild(review_card(review))
+            });
+        })
+}
+
 
 /*
 function loadAnalytics0() {
@@ -111,3 +124,4 @@ function loadAnalytics0() {
 
 // Call the function to load analytics when the page loads
 window.onload = loadAnalytics();
+window.onload = add_reviews();

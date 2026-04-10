@@ -40,7 +40,7 @@ def user_data(userid):
             "id":user[0],
             "name":user[1],
             "bio":user[5],
-            "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5], "user_liked":x[6], "user_report":x[7]} for x in reviews]
+            "reviews":[{"albumid":x[0], "timestamp":x[1], "score":x[2], "liked":x[3], "content":x[4], "numLikes":x[5]} for x in reviews]
         }
 
 @users.get("/api/user/<userid>")
@@ -49,6 +49,36 @@ def user_lookup(userid):
     if data == None:
         return {"message":"User with ID %s not found."}, 404 # = Not Found
     return jsonify(user_data(userid)), 200 # = OK
+
+@users.get("/api/user/<userid>/reviews")
+def user_reviews(userid):
+    limit = request.args.get('limit')
+    limit = int(limit) if limit != None else 5
+
+    cursor = sql.get_db().cursor()
+
+    a = is_admin()
+
+    if 'id' in session:
+        # user is logged in -> get perspective data 
+        cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, IFNULL(Tags.info & 128 = 128, 0) as user_like, IFNULL(Tags.info & 64 = 64, 0) as user_report, Review.AlbumID FROM Review JOIN Account ON Account.ID = Review.AccountID LEFT JOIN Tags ON Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.AccountID = %s WHERE Review.AccountID=%s ORDER BY Likes DESC LIMIT %s;", (session['id'], userid, limit))
+        results = cursor.fetchall()
+
+        cursor.close()
+
+        return jsonify({
+            "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6], "user_liked":x[7], "user_report":x[8], "albumid":x[9], "is_admin":a, "is_own":int(int(x[0]) == session['id'])} for x in results]
+        })
+    else:
+        # no login -> anonymous data
+        cursor.execute("SELECT Account.ID, Account.Name, Review.timestamp, Review.Score, Review.Liked, Review.Content, (SELECT COUNT(*) FROM Tags WHERE Tags.ReviewAccountID = Review.AccountID AND Tags.ReviewAlbumID = Review.AlbumID AND Tags.info & 128) AS Likes, Review.AlbumID FROM Review JOIN Account ON Account.ID = Review.AccountID WHERE Review.AccountID=%s ORDER BY Likes DESC LIMIT %s;", (userid, limit))
+        results = cursor.fetchall()
+
+        cursor.close()
+
+        return jsonify({
+            "reviews":[{"id":x[0], "name":x[1], "timestamp":x[2], "score":x[3], "liked":x[4], "content":x[5], "numLikes":x[6], "albumid":x[7], "is_admin":a} for x in results]
+        })
 
 @users.post("/api/user")
 def signup():
@@ -86,7 +116,7 @@ def signup():
 
 @users.put("/api/user/<userid>")
 def update_user(userid):
-    if session['id'] != userid and not is_admin():
+    if session['id'] != int(userid) and not is_admin():
         return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     name, password, bio = request.form['name'], request.form['password'], request.form['bio']
@@ -120,7 +150,7 @@ def update_user(userid):
 
 @users.delete("/api/user/<userid>")
 def delete_user(userid):
-    if session['id'] != userid and not is_admin():
+    if session['id'] != int(userid) and not is_admin():
         return {"message": "Insufficient permissions."}, 401 # = Unauthorized
     
     cursor = sql.get_db().cursor()
@@ -129,7 +159,7 @@ def delete_user(userid):
         cursor.close()
         return {"message": "User with ID %s not found." %userid}, 404 # = Not Found
     
-    if userid == session['id']:
+    if int(userid) == session['id']:
         session.pop('id', None)
 
     cursor.close()
